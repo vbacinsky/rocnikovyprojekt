@@ -14,8 +14,13 @@ import javafx.scene.text.Font;
 public class Map extends GridPane {
     private final int width = 1032;
     private final int height = 903;
-    public Map () throws IOException {
-        Scanner scanner = new Scanner(new File("..\\resources\\mapa.txt"));
+    public Map () {
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File("resources\\mapa.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         int row = scanner.nextInt();
         int col = scanner.nextInt();

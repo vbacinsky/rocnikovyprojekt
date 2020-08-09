@@ -39,26 +39,14 @@ public class StartDialog {
         TextField nick = new TextField();
         central.getChildren().add(nick);
 
-        /*
-        while(true) {
-            int length = Integer.parseInt(nick.getText());
-            if(length > 0 && length < 13) break;
-            nick.setAccessibleText("1-12 characters");
-        }
-
-        */
-
         Button btnOk = new Button("pripoj");
         central.getChildren().add(btnOk);
         central.setAlignment(Pos.CENTER);
 
-        btnOk.setOnAction((ActionEvent event)-> {
+        btnOk.setOnAction((ActionEvent event) -> {
             try {
-                game.pripojSA(nick.getText());
+                game.createGame(nick.getText());
                 dialogStage.close();
-                }
-            catch (NumberFormatException e) {
-                System.out.println("chyba");
             } catch (IOException e) {
                 e.printStackTrace();
             }

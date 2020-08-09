@@ -1,7 +1,6 @@
 package client;
 
 
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,8 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ public class BuyDialog {
 
     private static  ArrayList<Chip> chips = new ArrayList<>();
 
-    private static Template template;
+    private static PlayerTemplate playerTemplate;
     private static Button btnOk;
     private static int price = 0;
 
@@ -51,8 +48,8 @@ public class BuyDialog {
 
 
 
-    public BuyDialog(Template template) {
-        this.template = template;
+    public BuyDialog(PlayerTemplate playerTemplate) {
+        this.playerTemplate = playerTemplate;
         Scene scene = new Scene(new Group());
 
         dialogStage.setTitle("Table");
@@ -126,20 +123,20 @@ public class BuyDialog {
         btnOk.setOnAction((
                 ActionEvent event) -> {
             try {
-                if(template.getMoney() < price) {
+                if(playerTemplate.getMoney() < price) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("POZOR");
                     alert.setHeaderText(null);
-                    alert.setContentText("Tvoj aktualny pocet fazul je " + template.getMoney() + ", ale cena je prilis vysoka, az " + price);
+                    alert.setContentText("Tvoj aktualny pocet fazul je " + playerTemplate.getMoney() + ", ale cena je prilis vysoka, az " + price);
                     ButtonType buttonTypeOK = new ButtonType("OK", ButtonBar.ButtonData.CANCEL_CLOSE);
                     alert.getButtonTypes().setAll(buttonTypeOK);
                     alert.show();
                 } else {
-                    int x = template.getMoney() - price;
-                    template.setMoney("" + x);
+                    int x = playerTemplate.getMoney() - price;
+                    playerTemplate.setMoney("" + x);
                     for (Chip chip : chips) {
-                        if(chip.getIsPositive()) template.addPositiveChips(chip);
-                        else template.addNegativeChips(chip);
+                        if(chip.getIsPositive()) playerTemplate.addPositiveChips(chip);
+                        else playerTemplate.addNegativeChips(chip);
                     }
                 }
                 price = 0;
@@ -243,7 +240,7 @@ public class BuyDialog {
                         price = price + 1;
                     }
 
-                    chips.add(new Chip(isPositive, template.getColor(), this.znak, template));
+                    chips.add(new Chip(isPositive, playerTemplate.getColor(), this.znak, playerTemplate));
 
 
                     countChips++;

@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Template extends VBox {
+public class PlayerTemplate extends VBox {
 
 
     private boolean isSomePressed = false;
@@ -29,8 +29,8 @@ public class Template extends VBox {
     private GridPane gridPaneP = new GridPane();
     private GridPane gridPaneN = new GridPane();
 
-    public Template (String nick_of_player, boolean isOpponent, Image image, GameClient client) {
-        this.color = client.getColor();
+    public PlayerTemplate(String playerNick, boolean isOpponent, Image image) {
+        this.color = GameClient.getColor();
         this.setSpacing(10);
 
         HBox image_nick = new HBox(40);
@@ -39,7 +39,7 @@ public class Template extends VBox {
         nick_money.setPadding(new Insets(10, 10, 10, 10));
 
         nick_money.setAlignment(Pos.CENTER);
-        Text nick = new Text(nick_of_player);
+        Text nick = new Text(playerNick);
         nick.setFont(new Font(20));
         this.money = new Text("10");
         money.setFont(new Font(30));
@@ -89,7 +89,7 @@ public class Template extends VBox {
         this.getChildren().addAll(image_nick, positiveChips, negativeChips, fromBox, toBox);
 
 
-        if(isOpponent == false) {
+        if(!isOpponent) {
             HBox buttonBox = new HBox(10);
             Button end = new Button("END");
             Button buy = new Button("BUY");

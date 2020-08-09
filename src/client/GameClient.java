@@ -11,35 +11,23 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class GameClient extends Application {
     private int akt_money = 10;
-    private Stage primaryStage;
-    private Menu mFile;
-    private MenuItem miFileNew;
-    private MenuItem miFileExit;
-    private GridPane grid;
     private BorderPane border;
-    private Color color = Color.LIGHTBLUE;
 
-
-
-    private boolean newAction() {
+    private void newGameAction() {
         StartDialog dialog = new StartDialog(this);
         dialog.showDialog();
-        return true;
     }
 
-    private boolean exitAction() {
+    private void exitGameAction() {
         Platform.exit();
-        return true;
     }
 
 
@@ -50,14 +38,14 @@ public class GameClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        //TODO: rozdlit do funkcii .. createMenuBar, ...
         primaryStage.setWidth(1850);
         primaryStage.setHeight(1050);
         primaryStage.setMinWidth(1850);
         primaryStage.setMinHeight(1050);
         primaryStage.setMaxHeight(1050);
         primaryStage.setMaxWidth(1850);
-        grid = new GridPane();
+        GridPane grid = new GridPane();
         grid.setHgap(2);
         grid.setVgap(2);
         border = new BorderPane();
@@ -70,79 +58,59 @@ public class GameClient extends Application {
         primaryStage.setTitle("Slovania obchodnikmi");
         primaryStage.show();
 
-        mFile = new Menu("Game");
-        miFileNew = new MenuItem("New");
-        miFileExit = new MenuItem("Exit");
+        Menu mFile = new Menu("Game");
+        MenuItem miFileNew = new MenuItem("New");
+        MenuItem miFileExit = new MenuItem("Exit");
         mFile.getItems().addAll(miFileNew, miFileExit);
         menuBar.getMenus().add(mFile);
 
+        miFileNew.setOnAction((ActionEvent event) -> newGameAction());
 
-        miFileNew.setOnAction((ActionEvent event) -> {
-            newAction();
-        });
-
-        miFileExit.setOnAction((ActionEvent event) -> {
-            exitAction();
-        });
+        miFileExit.setOnAction((ActionEvent event) -> exitGameAction());
     }
 
-    public void pripojSA(String nick) throws IOException {
+    public void createGame(String nick) {
         HBox root = new HBox(50);
         root.setPadding(new Insets(60, 20, 20, 20));
-
-        //LEFT
-        VBox leftBox = new VBox(100);
-
-        //up
-        Template upBox = new Template("Player 1", true, null, this);
 
         //down
         Image image = null;
         try {
-            image = new Image(new FileInputStream("C:\\Users\\volod\\Desktop\\shrek.png"));
+            image = new Image(new FileInputStream("resources/shrek.png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        Template myBox = new Template(nick, false, image, this);
+        PlayerTemplate upLeftPlayer = new PlayerTemplate("Player 1", true, null);
+        PlayerTemplate downLeftPlayer = new PlayerTemplate(nick, false, image);
+        PlayerTemplate upRightPlayer = new PlayerTemplate("Player 2", true, null);
+        PlayerTemplate downRightPlayer = new PlayerTemplate("Player 3", true, null);
 
-        leftBox.getChildren().addAll(new StackPane(makeBackround(), upBox), new StackPane(makeBackround(), myBox));
-
-
-        //Mid
+        VBox leftBox = createBox(upLeftPlayer, downLeftPlayer);
         Map map = new Map();
-
-        //RIGHT
-        VBox rightBox = new VBox(100);
-
-
-        //up
-        Template upBoxRight = new Template("Player 2", true, null, this);
-
-        //down
-        Template downBoxRight = new Template("Player 3", true, null, this);
-
-        rightBox.getChildren().addAll(new StackPane(makeBackround(), upBoxRight), new StackPane(makeBackround(), downBoxRight));
-
+        VBox rightBox = createBox(upRightPlayer, downRightPlayer);
 
         root.getChildren().addAll(leftBox, map, rightBox);
         border.getChildren().add(root);
-
-
-
     }
 
-    private Rectangle makeBackround() {
+    private VBox createBox(PlayerTemplate playerUp, PlayerTemplate playerDown) {
+        VBox box = new VBox(100);
         Rectangle rectangle = new Rectangle(320, 400);
         rectangle.setFill(Color.DARKORANGE);
         rectangle.setArcHeight(50);
         rectangle.setArcWidth(50);
 
-        return rectangle;
+        box.getChildren().addAll(
+                new StackPane(rectangle, playerUp),
+                new StackPane(rectangle, playerDown)
+        );
+
+        return box;
     }
 
-    public Color getColor() {
-        return this.color;
+    public static Color getColor() {
+        return Color.LIGHTBLUE;
     }
 
 }

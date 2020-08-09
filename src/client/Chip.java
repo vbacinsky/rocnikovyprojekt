@@ -14,7 +14,7 @@ public class Chip extends StackPane {
     private Color color;
     private String znak;
 
-    public Chip(boolean isPositive, Color color, String znak, Template template) {
+    public Chip(boolean isPositive, Color color, String znak, PlayerTemplate playerTemplate) {
         this.color = color;
         this.znak = znak;
         this.isPositive = isPositive;
@@ -27,12 +27,12 @@ public class Chip extends StackPane {
                 if(isPressed) {
                     label.setTextFill(Color.BLACK);
                     this.circle.setFill(this.color);
-                    template.setisSomePressed(false);
+                    playerTemplate.setisSomePressed(false);
                     isPressed = false;
-                } else if(!template.getisSomePressed()) {
+                } else if(!playerTemplate.getisSomePressed()) {
                     this.circle.setFill(Color.BLACK);
                     this.label.setTextFill(Color.WHITE);
-                    template.setisSomePressed(true);
+                    playerTemplate.setisSomePressed(true);
                     this.isPressed = true;
                 }
             }
