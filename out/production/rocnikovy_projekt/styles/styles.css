@@ -1,0 +1,8 @@
+.table-row-cell {
+    -fx-cell-size: 35px;
+}
+
+
+#positive-table .table-row {
+    -fx-alignment: CENTER;
+}
