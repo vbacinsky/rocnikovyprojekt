@@ -15,7 +15,7 @@ public class Map extends GridPane {
     private final int width = 1032;
     private final int height = 903;
     public Map () throws IOException {
-        Scanner scanner = new Scanner(new File("C:\\Users\\volod\\Desktop\\mapa.txt"));
+        Scanner scanner = new Scanner(new File("..\\resources\\mapa.txt"));
 
         int row = scanner.nextInt();
         int col = scanner.nextInt();

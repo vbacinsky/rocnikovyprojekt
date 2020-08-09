@@ -2,20 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c8cb4527-365e-40d0-9d3e-c90105cd9188" name="Default Changelist" comment="Fix table">
-      <change afterPath="$PROJECT_DIR$/src/client/Cesta.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/styles/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/GameClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/GameClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/StartDIalog.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/StartDIalog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Template.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Template.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/BuyDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/BuyDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/Chip.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/Chip.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/GameClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/GameClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Map.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Map.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/client/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/Map.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/Policko.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/Policko.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/ServerConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/ServerConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/Template.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/Template.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -58,10 +47,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/client/GameClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-272">
+            <state relative-caret-position="-901">
               <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
               <folding>
                 <element signature="e#3933#3934#0" expanded="true" />
@@ -104,7 +93,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/client/Chip.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="357">
@@ -121,8 +110,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/client/Map.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="15" column="16" lean-forward="true" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+            <state relative-caret-position="306">
+              <caret line="23" column="43" lean-forward="true" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -219,10 +208,10 @@
         <option value="$PROJECT_DIR$/src/client/GameClient.java" />
         <option value="$PROJECT_DIR$/src/client/Policko.java" />
         <option value="$PROJECT_DIR$/src/client/Cesta.java" />
-        <option value="$PROJECT_DIR$/src/client/Map.java" />
         <option value="$PROJECT_DIR$/src/client/BuyDialog.java" />
         <option value="$PROJECT_DIR$/src/client/Template.java" />
         <option value="$PROJECT_DIR$/src/client/Chip.java" />
+        <option value="$PROJECT_DIR$/src/client/Map.java" />
       </list>
     </option>
   </component>
@@ -262,13 +251,13 @@
               <item name="rocnikovy_projekt" type="b2602c69:ProjectViewProjectNode" />
               <item name="rocnikovy_projekt" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="server" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="rocnikovy_projekt" type="b2602c69:ProjectViewProjectNode" />
               <item name="rocnikovy_projekt" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="styles" type="462c0819:PsiDirectoryNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -281,7 +270,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1596995508707" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1597002473102" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -365,7 +354,7 @@
       <workItem from="1596742652533" duration="754000" />
       <workItem from="1596788189459" duration="14538000" />
       <workItem from="1596829985246" duration="1918000" />
-      <workItem from="1596876512847" duration="34592000" />
+      <workItem from="1596876512847" duration="35497000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1596645862682</created>
@@ -427,13 +416,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="141622000" />
+    <option name="totallyTimeSpent" value="142527000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.498452" visible="true" weight="0.14496644" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.498452" visible="true" weight="0.14496644" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -442,7 +430,7 @@
       <window_info id="Favorites" order="6" sideWeight="0.501548" side_tool="true" visible="true" weight="0.14496644" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.08498584" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.08498584" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39943343" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -653,17 +641,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/client/GameClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-272">
-          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
-          <folding>
-            <element signature="e#3933#3934#0" expanded="true" />
-            <element signature="e#3965#3966#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/client/Policko.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -683,16 +660,6 @@
             <element signature="e#755#756#0" expanded="true" />
             <element signature="e#802#803#0" expanded="true" />
             <element signature="e#838#839#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/client/Map.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="15" column="16" lean-forward="true" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -734,6 +701,27 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1460#1461#0" expanded="true" />
             <element signature="e#1523#1524#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/client/Map.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="23" column="43" lean-forward="true" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/client/GameClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-901">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+          <folding>
+            <element signature="e#3933#3934#0" expanded="true" />
+            <element signature="e#3965#3966#0" expanded="true" />
           </folding>
         </state>
       </provider>
