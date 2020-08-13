@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import server.Server;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class StartDialog {
 
     private Stage dialogStage;
+    private ServerConnection serverConnection;
 
     public StartDialog(GameClient game) {
         dialogStage = new Stage();
@@ -45,17 +47,18 @@ public class StartDialog {
 
         btnOk.setOnAction((ActionEvent event) -> {
             try {
-                game.createGame(nick.getText());
-                dialogStage.close();
+                this.serverConnection = new ServerConnection("localhost",22223, game, nick.getText());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            dialogStage.close();
         });
 
     }
 
-    public void showDialog() {
+    public ServerConnection showDialog() {
         dialogStage.showAndWait();
+        return this.serverConnection;
     }
 
 

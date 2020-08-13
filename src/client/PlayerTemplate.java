@@ -28,9 +28,28 @@ public class PlayerTemplate extends VBox {
     private Color color;
     private GridPane gridPaneP = new GridPane();
     private GridPane gridPaneN = new GridPane();
+    private GameClient gameClient;
 
-    public PlayerTemplate(String playerNick, boolean isOpponent, Image image) {
-        this.color = GameClient.getColor();
+    public PlayerTemplate(String playerNick, boolean isOpponent, Image image, String color, String from, String to, GameClient gameClient) {
+
+        this.gameClient = gameClient;
+
+        switch(color) {
+            case "BLUE":
+                this.color = Color.LIGHTBLUE;
+                break;
+            case "RED":
+                this.color = Color.RED;
+                break;
+            case "GREEN":
+                this.color = Color.GREEN;
+                break;
+            case "YELLOW":
+                this.color = Color.YELLOW;
+                break;
+             default:
+                 break;
+        }
         this.setSpacing(10);
 
         HBox image_nick = new HBox(40);
@@ -49,7 +68,7 @@ public class PlayerTemplate extends VBox {
 
         Circle circle = new Circle();
         circle.setRadius(10);
-        circle.setFill(Color.WHITE);
+        circle.setFill(this.color);
 
         if(image == null) {
             Rectangle rec = new Rectangle(110,185);
@@ -74,17 +93,17 @@ public class PlayerTemplate extends VBox {
 
 
         HBox fromBox = new HBox(10);
-        Text castleA = new Text("CASTLE A");
-        Text from = new Text("FROM: ");
-        from.setFill(Color.WHITE);
-        fromBox.getChildren().addAll(from, castleA);
+        Text castleA = new Text(from);
+        Text fromText = new Text("FROM: ");
+        fromText.setFill(Color.WHITE);
+        fromBox.getChildren().addAll(fromText, castleA);
 
 
         HBox toBox = new HBox(10);
-        Text castleB = new Text("CASTLE B");
-        Text to = new Text("TO: ");
-        to.setFill(Color.WHITE);
-        toBox.getChildren().addAll(to, castleB);
+        Text castleB = new Text(to);
+        Text toText = new Text("TO: ");
+        toText.setFill(Color.WHITE);
+        toBox.getChildren().addAll(toText, castleB);
 
         this.getChildren().addAll(image_nick, positiveChips, negativeChips, fromBox, toBox);
 
@@ -95,6 +114,8 @@ public class PlayerTemplate extends VBox {
             Button buy = new Button("BUY");
             Button showRules = new Button("RUL");
             Button showMission = new Button("M");
+            Button hod_kockou = new Button("Start move");
+
 
 
             buy.setOnAction((
@@ -118,7 +139,7 @@ public class PlayerTemplate extends VBox {
                     System.out.println("chyba");
                 }
             });
-            buttonBox.getChildren().addAll(end, buy, showMission, showRules);
+            buttonBox.getChildren().addAll(end, buy, showMission, showRules, hod_kockou);
             buttonBox.setAlignment(Pos.BOTTOM_CENTER);
             this.getChildren().add(buttonBox);
         }

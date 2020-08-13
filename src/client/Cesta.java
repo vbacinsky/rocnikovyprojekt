@@ -8,18 +8,23 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 
-public class Cesta extends StackPane {
-    private Color colorBackground = Color.GRAY;
+public class Cesta extends StackPane implements Policko{
+    private int id;
+    private Color colorBackround = Color.GRAY;
     private Color color = Color.WHITE;
     private Label label = new Label("");
+    private boolean hasChip = false;
+    private Chip act_chip = null;
 
-    public Cesta() {
-        this.getChildren().addAll(new Rectangle(43, 43, colorBackground), new Circle(20, color), label);
+    public Cesta(int id) {
+        this.id = id;
+        label.setText(""+id);
+        this.getChildren().addAll(new Rectangle(43, 43, colorBackround), new Circle(20, color), label);
         this.setAlignment(Pos.CENTER);
     }
 
-    public void setColorBackground(Color newColor) {
-        this.colorBackground = newColor;
+    public void setColorBackround(Color newColor) {
+        this.colorBackround = newColor;
     }
 
     public void setColor(Color newColor) {
