@@ -145,8 +145,6 @@ public class Game {
 
     public void startMove(String[] clientRequestTokens) {
 
-        System.out.println("Vidime sa");
-        /*
 
         Random random = new Random();
         int cislo = random.nextInt(6) + 1;
@@ -170,8 +168,6 @@ public class Game {
         for (ClientHandler client : clients) {
             client.outMessage(message.toString());
         }
-
-*/
 
 
     }

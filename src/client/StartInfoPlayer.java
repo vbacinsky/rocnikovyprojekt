@@ -48,7 +48,7 @@ public class StartInfoPlayer {
     private void findCharacter(String character) {
         Image image = null;
         try {
-            image = new Image(new FileInputStream("resources/" + character + ".png"));
+            image = new Image(new FileInputStream("resources\\" + character + ".png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

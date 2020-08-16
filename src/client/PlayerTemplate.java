@@ -54,11 +54,17 @@ public class PlayerTemplate extends VBox {
         points.setFont(new Font(20));
         Text nick = new Text(info.getNick());
         nick.setFont(new Font(20));
-        this.money = new Text("10 F");
-        money.setFont(new Font(30));
 
 
-        nick_money.getChildren().addAll(nick, points, money);
+        nick_money.getChildren().addAll(nick, points);
+        if(!info.getIsOpponent()) {
+            this.money = new Text("10 F");
+            money.setFont(new Font(30));
+            nick_money.getChildren().add(money);
+        }
+
+
+
 
         Circle circle = new Circle();
         circle.setRadius(10);
@@ -180,7 +186,8 @@ public class PlayerTemplate extends VBox {
 
     public void setPoints(String plusPoints){
         String[] x = this.points.getText().split(" ");
-        this.points.setText("" + Integer.valueOf(x[0] + Integer.valueOf(plusPoints)) + " POINTS");
+        int result = Integer.valueOf(x[0] + Integer.valueOf(plusPoints));
+        this.points.setText("" + result + " POINTS");
     }
 
     public void addPositiveChips(Chip positiveChip) {
