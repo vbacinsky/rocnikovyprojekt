@@ -130,10 +130,14 @@ public class Game {
             else player.setStartedMission(false);
 
             player.setPoints(Integer.valueOf(currentm.getPoints()));
-            if (checkWinner(player)) System.out.println("KONEEC");
             String message;
-            message = "NEW_MISSION " + nick +" " + mission.getFrom() + " " + mission.getTo() + " " + currentm.getPoints() + " " + isStarted;
+            if (checkWinner(player)) {
+                message = "END_GAME " + nick;
+                System.out.println("KONEEC");
+            } else {
+                message = "NEW_MISSION " + nick + " " + mission.getFrom() + " " + mission.getTo() + " " + currentm.getPoints() + " " + isStarted;
 
+            }
             for (ClientHandler client : clients) {
                 client.outMessage(message);
             }
@@ -147,7 +151,7 @@ public class Game {
 
 
         Random random = new Random();
-        int cislo = random.nextInt(6) + 1;
+        int cislo = random.nextInt(20) + 1;
 
         String nick = clientRequestTokens[1];
         Player player = playersByNick.get(nick);
