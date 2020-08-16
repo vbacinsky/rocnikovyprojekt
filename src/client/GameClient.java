@@ -69,7 +69,8 @@ public class GameClient extends Application {
     }
 
     public void createGame(boolean isYourTurn, StartInfoPlayer myInfo, StartInfoPlayer opponentInfo) {
-        if(isYourTurn) this.message.setText("Now is your Turn");
+        if(isYourTurn) this.message.setText("NOW IS YOUR TURN");
+        else this.message.setText("WAIT FOR TURN");
         this.message.setFont(new Font(40));
         this.nick = myInfo.getNick();
         this.act_position = myInfo.getActPosition();
@@ -200,6 +201,9 @@ public class GameClient extends Application {
         if(serverResponseTokens[1].equals(this.nick)) {
             this.setIsYourTurn(true);
             this.downLeftPlayer.setIsYourTurn(true);
+            Platform.runLater(() -> {
+                this.message.setText("NOW IS YOUR TURN");
+            });
         }
     }
 
@@ -272,5 +276,9 @@ public class GameClient extends Application {
         this.downLeftPlayer.removeNegativeChip(chip);
     }
 
+
+    public void setMessage(String string) {
+        this.message.setText(string);
+    }
 
 }
