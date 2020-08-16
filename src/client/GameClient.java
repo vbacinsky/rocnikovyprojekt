@@ -5,15 +5,13 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import server.Game;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -190,6 +188,19 @@ public class GameClient extends Application {
 
 
     }
+
+    public void end_game(String serverResponse) {
+        String[] serverResponseTokens = serverResponse.split(" ");
+        System.out.println("Vitaz je " + serverResponseTokens[1]);
+
+        exitGameAction();
+        //alert ze je koniec hry a vyhral serverResponseTokens[1]
+    }
+
+
+
+
+
 
     public void setNewPlayerMove(String serverResponse) {
         //rozdelit este pred tym nez zaavolas funkciu
