@@ -51,6 +51,7 @@ public class  ServerConnection implements Runnable {
                 if(serverResponse.contains("STARTED_MISSION")) gameClient.started_mission(serverResponse);
                 if(serverResponse.contains("CHANGE_POSITION_OPPONENT")) gameClient.change_position_opponent(serverResponse);
                 if(serverResponse.contains("NEW_PLAYER_MOVE")) gameClient.setNewPlayerMove(serverResponse);
+                if(serverResponse.contains("END_GAME")) gameClient.end_game(serverResponse);
             }
         } catch (IOException e) {
                 e.printStackTrace();
