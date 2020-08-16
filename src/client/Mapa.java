@@ -27,7 +27,7 @@ public class Mapa extends GridPane {
 
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("resources\\mapa.txt"));
+            scanner = new Scanner(new File("resources/mapa.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

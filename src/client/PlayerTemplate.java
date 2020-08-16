@@ -125,6 +125,7 @@ public class PlayerTemplate extends VBox {
                         this.isSomePressed = false;
                         this.isYourTurn = false;
                         this.gameClient.setIsYourTurn(false);
+                        this.gameClient.setMessage("WAIT FOR TURN");
                         this.gameClient.endMove();
                     }
                 } catch (NumberFormatException e) {
