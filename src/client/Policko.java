@@ -7,4 +7,14 @@ public interface Policko {
 
    public void setColorBackround(Color newColor);
 
+   public int getID();
+
+   public void setFigurku(Color color);
+
+   public void setIsActive(boolean bool);
+
+   public void deleteFigurku();
+
+   public void setNormalBackround();
+
 }

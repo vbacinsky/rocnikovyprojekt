@@ -35,13 +35,22 @@ public class  ServerConnection implements Runnable {
     public void run() {
         try {
             while (true) {
+
+                //zmenit ako server
                 String serverResponse = in.readLine();
                 if(serverResponse == null) break;
                 if(serverResponse.contains("start")) {
                     System.out.println(serverResponse);
                     createGame(serverResponse);
                 }
+
+                if(serverResponse.contains("VYBER_POLICKO " + nick)) gameClient.vyber_policko(serverResponse);
                 System.out.println("Server says: " + serverResponse);
+
+                if(serverResponse.contains("NEW_MISSION")) gameClient.new_mission(serverResponse);
+                if(serverResponse.contains("STARTED_MISSION")) gameClient.started_mission(serverResponse);
+                if(serverResponse.contains("CHANGE_POSITION_OPPONENT")) gameClient.change_position_opponent(serverResponse);
+                if(serverResponse.contains("NEW_PLAYER_MOVE")) gameClient.setNewPlayerMove(serverResponse);
             }
         } catch (IOException e) {
                 e.printStackTrace();
@@ -59,21 +68,26 @@ public class  ServerConnection implements Runnable {
         boolean isYourTurn;
         String[] serverResponseTokens = serverResponse.split(" ");
         int count = 2;
-        System.out.println(serverResponseTokens[1]);
-        System.out.println(nick);
+
+        StartInfoPlayer myInfo = null;
+        StartInfoPlayer opponentInfo = null;
+
+
+        //nejak rozumnejsie potom :D
+        for (int i = 0; i < 2; i++) {
+            if (serverResponseTokens[count].equals(nick)) {
+               myInfo = new StartInfoPlayer(serverResponseTokens[count], serverResponseTokens[count+1],
+                        serverResponseTokens[count+2], serverResponseTokens[count+3], serverResponseTokens[count+4], serverResponseTokens[count+5], false);
+            } else {
+               opponentInfo = new StartInfoPlayer(serverResponseTokens[count], serverResponseTokens[count+1],
+                        serverResponseTokens[count+2], serverResponseTokens[count+3], serverResponseTokens[count+4], serverResponseTokens[count+5], true);
+            }
+            count = count + 6;
+        }
 
         isYourTurn = serverResponseTokens[1].equals("." + nick);
-
         System.out.println(isYourTurn);
-        while (!serverResponseTokens[count].equals(nick)) {
-            count++;
-        }
-        System.out.println(count);
-        String color = serverResponseTokens[count + 1];
-        String from = serverResponseTokens[count + 2];
-        String to = serverResponseTokens[count + 3];
-        String image = serverResponseTokens[count + 4];
-        System.out.println(image);
-        gameClient.createGame(nick, color, from, to, image, isYourTurn);
+
+        gameClient.createGame(isYourTurn, myInfo, opponentInfo);
     }
 }

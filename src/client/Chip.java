@@ -23,17 +23,20 @@ public class Chip extends StackPane {
         this.label.setText(this.znak);
         this.getChildren().addAll(this.circle, label);
         this.setOnMouseClicked((MouseEvent e) -> {
-            if(!isPositive) {
-                if(isPressed) {
-                    label.setTextFill(Color.BLACK);
-                    this.circle.setFill(this.color);
-                    playerTemplate.setisSomePressed(false);
-                    isPressed = false;
-                } else if(!playerTemplate.getisSomePressed()) {
-                    this.circle.setFill(Color.BLACK);
-                    this.label.setTextFill(Color.WHITE);
-                    playerTemplate.setisSomePressed(true);
-                    this.isPressed = true;
+            if(playerTemplate.getIsYourTurn()) {
+                if (!isPositive) {
+                    if (isPressed) {
+                        label.setTextFill(Color.BLACK);
+                        this.circle.setFill(this.color);
+                        playerTemplate.setisSomePressed(false);
+                        isPressed = false;
+                    } else if (!playerTemplate.getisSomePressed()) {
+                        this.circle.setFill(Color.BLACK);
+                        this.label.setTextFill(Color.WHITE);
+                        playerTemplate.setisSomePressed(true);
+                        this.isPressed = true;
+                        playerTemplate.setPressedChip(this);
+                    }
                 }
             }
         });
@@ -45,5 +48,9 @@ public class Chip extends StackPane {
 
     public String getZnak() {
         return this.znak;
+    }
+
+    public Color getColor() {
+        return this.color;
     }
 }

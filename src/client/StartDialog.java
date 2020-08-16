@@ -47,7 +47,7 @@ public class StartDialog {
 
         btnOk.setOnAction((ActionEvent event) -> {
             try {
-                this.serverConnection = new ServerConnection("localhost",22223, game, nick.getText());
+                this.serverConnection = new ServerConnection("localhost",22222, game, nick.getText());
             } catch (IOException e) {
                 e.printStackTrace();
             }

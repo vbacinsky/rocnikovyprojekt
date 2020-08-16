@@ -19,9 +19,12 @@ public class Game {
     private ArrayList<String> colors = createColors();
     private ArrayList<String> characters = createCharacters();
     private Map<String, Integer> castlesByID = createMap();
+    private ArrayList<String> idByCastles = createArray();
+    private int idWhoIsOnTurn = 0;
 
 
-    Graph graph = createGraph();
+    private Graph graph = createGraph();
+    private Map<String, Player> playersByNick = new HashMap<>();
 
 
 
@@ -33,31 +36,25 @@ public class Game {
 
     public void createGame() {
 
-        //potom nejak randomne vygenerovat tie misie, farbu, postavy
-
-
-
-
-        for (int i = 0; i < playersNick.size(); i++) {
-            this.players.add(new Player(playersNick.get(i), true, randomMission()));
+        for (String nick : playersNick) {
+            Mission mission = randomMission();
+            String color = randomColor();
+            int start_position = this.castlesByID.get(mission.getFrom());
+            Player player = new Player(nick, true, mission, start_position, color);
+            this.players.add(player);
+            playersByNick.put(nick, player);
         }
-
-        //vytvorit mapu
-
 
 
         String message;
 
-
         Random random = new Random();
 
-        System.out.println(players);
-        String WhoisOnTurn = "." + players.get(random.nextInt(1)).getNick(); //zmenit na 4
-
+        String WhoisOnTurn = "." + players.get(idWhoIsOnTurn).getNick(); //zmenit na 4
         //vygenerovat id policok kde moze stupit aby si mohol client vybrat
 
-        message = "start " + WhoisOnTurn + " " + players.get(0).getNick() + " " + randomColor() + " " + players.get(0).getCurrentMission().getFrom() + " " + players.get(0).getCurrentMission().getTo() + " " + randomCharacter();
-        //players.get(2) + " " + randomColor() + " " + listOfMissions.get(2).getFrom() + " " + listOfMissions.get(2).getTo() + " " + "shrek" + " " +
+        message = "start " + WhoisOnTurn + " " + players.get(0).getNick() + " " + players.get(0).getColor() + " " + players.get(0).getCurrentMission().getFrom() + " " + players.get(0).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(0).getAct_position() + " " +
+        players.get(1).getNick() + " " + players.get(1).getColor() + " " +  players.get(1).getCurrentMission().getFrom() + " " +  players.get(1).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(1).getAct_position();
         //players.get(1) + " " + randomColor() + " " + listOfMissions.get(1).getFrom() + " " + listOfMissions.get(1).getTo() + " " + "rychlobeh" + " " +
         //players.get(0) + " " + randomColor() + " " + listOfMissions.get(0).getFrom() + " " + listOfMissions.get(0).getTo() + " " + "rychlobeh");
 
@@ -68,12 +65,160 @@ public class Game {
     }
 
 
-    public boolean checkWinner(Player player) {
-        return (player.getPoints() >= 20);
+    public void endMove() {
+        if(this.idWhoIsOnTurn == 1) idWhoIsOnTurn = 0;
+        else idWhoIsOnTurn++;
+        String message = "NEW_PLAYER_MOVE" + " " + players.get(idWhoIsOnTurn).getNick();
+
+        for (ClientHandler client : clients) {
+            client.outMessage(message);
+        }
+    }
+
+
+
+    public void changePosition(String[] clientRequestTokens) {
+        String nick = clientRequestTokens[1];
+        int act_policko = Integer.valueOf(clientRequestTokens[2]);
+        String previousPolicko = playersByNick.get(nick).getAct_position() + "";
+        playersByNick.get(nick).setAct_position(act_policko);
+        String message = "CHANGE_POSITION_OPPONENT " + nick + " " + clientRequestTokens[2] + " " + playersByNick.get(nick).getColor() + " " + previousPolicko;
+
+        for (ClientHandler client : clients) {
+            client.outMessage(message);
+        }
+
+
+        //posli vseetkym clientom
+        if(act_policko <= 14) {
+            check_if_started_mission(nick, act_policko);
+            check_if_finished_mission(nick, act_policko);
+        }
+    }
+
+    private void check_if_started_mission(String nick, int act_policko) {
+        Player player = playersByNick.get(nick);
+        Mission currentm = player.getCurrentMission();
+        if(act_policko == castlesByID.get(currentm.getFrom())) {
+            player.setStartedMission(true);
+
+
+            String message = "STARTED_MISSION " + nick;
+            for (ClientHandler client : clients) {
+                client.outMessage(message);
+            }
+        }
+    }
+
+
+    private void check_if_finished_mission(String nick, int act_policko) {
+        Player player = playersByNick.get(nick);
+        Mission currentm = player.getCurrentMission();
+        if(player.getStartedMission() && act_policko == castlesByID.get(currentm.getTo())) {
+
+            //poslat clientom parametre novej misie
+
+            Mission mission = randomMission();
+            player.setCurrentMission(mission);
+
+
+            String isStarted = "false";
+            if(mission.getFrom().equals(idByCastles.get(act_policko))) {
+                player.setStartedMission(true);
+                isStarted = "true";
+            }
+            else player.setStartedMission(false);
+
+            player.setPoints(Integer.valueOf(currentm.getPoints()));
+            if (checkWinner(player)) System.out.println("KONEEC");
+            String message;
+            message = "NEW_MISSION " + nick +" " + mission.getFrom() + " " + mission.getTo() + " " + currentm.getPoints() + " " + isStarted;
+
+            for (ClientHandler client : clients) {
+                client.outMessage(message);
+            }
+
+        }
 
     }
 
 
+    public void startMove(String[] clientRequestTokens) {
+
+        System.out.println("Vidime sa");
+        /*
+
+        Random random = new Random();
+        int cislo = random.nextInt(6) + 1;
+
+        String nick = clientRequestTokens[1];
+        Player player = playersByNick.get(nick);
+
+        int act_position = player.getAct_position();
+        ArrayList<Integer> listPolicok = findVerticesInDsitance(act_position, cislo);
+
+        //funkcia na vytvorenie message z pola stringov
+
+
+        StringBuilder message;
+
+        message = new StringBuilder("VYBER_POLICKO " + nick);
+        for (Integer policko : listPolicok) {
+            message.append(" ").append(policko);
+        }
+
+        for (ClientHandler client : clients) {
+            client.outMessage(message.toString());
+        }
+
+*/
+
+
+    }
+
+
+    private ArrayList<Integer> findVerticesInDsitance(int start, int distance) {
+        ArrayList<ArrayList<Integer>> vrcholy_vo_vzdialenosti = new ArrayList<>();
+        ArrayList<Integer> castles = new ArrayList<>();
+        int[] vzdialenosti = new int[140];
+
+        for (int i = 0; i < 140 ; i++) {
+            vzdialenosti[i] = -1;
+        }
+
+        vzdialenosti[start] = 0;
+        vrcholy_vo_vzdialenosti.add(new ArrayList<>());
+        vrcholy_vo_vzdialenosti.get(0).add(start);
+        //vrcholy_vo_vzdialenosti = [[start]]
+
+        System.out.println(start);
+        System.out.println(distance);
+
+        for (int aktualna_vzdialenost = 0; aktualna_vzdialenost < distance; aktualna_vzdialenost++) {
+            vrcholy_vo_vzdialenosti.add(new ArrayList<>());
+            for (Integer x : vrcholy_vo_vzdialenosti.get(aktualna_vzdialenost) ) {
+                ArrayList<Integer> neighbors = graph.getAdjLists().get(x);
+                for (Integer neigh : neighbors) {
+                    if(vzdialenosti[neigh] == -1) {
+                        vzdialenosti[neigh] = aktualna_vzdialenost + 1;
+                        vrcholy_vo_vzdialenosti.get(aktualna_vzdialenost + 1).add(neigh);
+                        if ((neigh <=14)) castles.add(neigh);
+                    }
+                }
+            }
+        }
+        for (Integer cas : castles) {
+            if(!vrcholy_vo_vzdialenosti.get(distance).contains(cas))
+            vrcholy_vo_vzdialenosti.get(distance).add(cas);
+        }
+        return vrcholy_vo_vzdialenosti.get(distance);
+
+    }
+
+    public boolean checkWinner(Player player) {
+        return (player.getPoints() >= 20);
+
+    }
 
 
 
@@ -84,8 +229,8 @@ public class Game {
     private Map<String, Integer> createMap() {
         Map<String, Integer> map = new HashMap<>();
 
-        map.put("Hanigovsky_hrad", 0);
-        map.put("Lubovniansky_hrad", 1);
+        map.put("Lubovniansky_hrad", 0);
+        map.put("Hanigovsky_hrad", 1);
         map.put("Kamenicky_hrad", 2);
         map.put("Kapusany", 3);
         map.put("Kosice", 4);
@@ -96,9 +241,9 @@ public class Game {
         map.put("Bardejov", 9);
         map.put("Filakovo", 10);
         map.put("Bratislava", 11);
-        map.put("Saris", 12);
-        map.put("Spissky_hrad", 13);
-        map.put("Blatnica", 14);
+        map.put("Blatnica", 12);
+        map.put("Spissky_hrad", 14);
+        map.put("Saris", 13);
 
         return map;
     }
@@ -109,10 +254,39 @@ public class Game {
     private ArrayList<Mission> createMissions() {
         ArrayList<Mission> missions = new ArrayList<>();
 
-        missions.add(new Mission("Blatnica", "Kosice", "4", "4"));
-        missions.add(new Mission("Sasov", "Trnava", "4", "4"));
-        missions.add(new Mission("Cabrad", "Spissky_hrad", "5", "5"));
-        missions.add(new Mission("Filakovo", "Strecno", "2", "2"));
+        missions.add(new Mission("Blatnica", "Kosice",  "4"));
+        missions.add(new Mission("Sasov", "Trnava", "4"));
+        missions.add(new Mission("Strecno", "Saris",  "4"));
+        missions.add(new Mission("Filakovo", "Strecno", "2"));
+        missions.add(new Mission("Saris", "Bratislava", "3"));
+        missions.add(new Mission("Hanigovsky_hrad", "Kosice", "1"));
+        missions.add(new Mission("Lubovniansky_hrad", "Blatnica", "6"));
+        missions.add(new Mission("Trnava", "Bardejov", "4"));
+        missions.add(new Mission("Kosice", "Trnava", "1"));
+        missions.add(new Mission("Blatnica", "Spissky_hrad", "3"));
+        missions.add(new Mission("Spissky_hrad", "Bratislava", "1"));
+        missions.add(new Mission("Hanigovsky_hrad", "Filakovo", "5"));
+        missions.add(new Mission("Bratislava", "Sasov", "3"));
+        missions.add(new Mission("Sasov", "Spissky_hrad", "4"));
+        missions.add(new Mission("Kosice", "Filakovo", "4"));
+        missions.add(new Mission("Trnava", "Filakovo", "5"));
+        missions.add(new Mission("Trnava", "Lubovniansky_hrad", "2"));
+        missions.add(new Mission("Spissky_hrad", "Trnava", "4"));
+        missions.add(new Mission("Kamenicky_hrad", "Blatnica", "5"));
+        missions.add(new Mission("Trencin", "Filakovo", "5"));
+        missions.add(new Mission("Kamenicky_hrad", "Sasov", "5"));
+        missions.add(new Mission("Kapusany", "Bardejov", "4"));
+        missions.add(new Mission("Strecno", "Trencin", "4"));
+        missions.add(new Mission("Trnava", "Bratislava", "2"));
+        missions.add(new Mission("Kamenicky_hrad", "Spissky_hrad", "6"));
+        missions.add(new Mission("Trnava", "Kamenicky_hrad","1"));
+        missions.add(new Mission("Trnava", "Kapusany", "2"));
+        missions.add(new Mission("Sasov", "Hanigovsky_hrad", "4"));
+
+
+
+
+
 
         return missions;
     }
@@ -127,6 +301,28 @@ public class Game {
 
         return colors;
 
+    }
+
+    private ArrayList<String> createArray() {
+        ArrayList<String> castles = new ArrayList<>();
+
+        castles.add("Lubovniansky_hrad");
+        castles.add("Hanigovsky_hrad");
+        castles.add("Kamenicky_hrad");
+        castles.add("Kapusany");
+        castles.add("Kosice");
+        castles.add("Trencin");
+        castles.add("Trnava");
+        castles.add("Sasov");
+        castles.add("Strecno");
+        castles.add("Bardejov");
+        castles.add("Filakovo");
+        castles.add("Bratislava");
+        castles.add("Blatnica");
+        castles.add("Saris");
+        castles.add("Spissky_hrad");
+
+        return castles;
     }
 
     private ArrayList<String> createCharacters() {
@@ -180,33 +376,38 @@ public class Game {
                 int id_act = id_pole[i][j];
                 int act = pole[i][j];
                 if(act == 3 || act == 4){
-                    tryAddEdge(id_act, id_pole[i - 1][j], pole[i - 1][j], graph);
-                    tryAddEdge(id_act, id_pole[i][j + 1], pole[i][j + 1], graph);
-                    tryAddEdge(id_act, id_pole[i][j - 1], pole[i][j - 1], graph);
-                    tryAddEdge(id_act, id_pole[i + 1][j], pole[i + 1][j], graph);
+                    tryAddEdge(id_act, id_pole[i - 1][j], pole[i - 1][j], graph, false);
+                    tryAddEdge(id_act, id_pole[i][j + 1], pole[i][j + 1], graph, false);
+                    tryAddEdge(id_act, id_pole[i][j - 1], pole[i][j - 1], graph, false);
+                    tryAddEdge(id_act, id_pole[i + 1][j], pole[i + 1][j], graph, false);
                 } else if(act == 5) {
-                    tryAddEdge(id_act, id_pole[i-2][j-1], pole[i-2][j-1], graph);
-                    tryAddEdge(id_act, id_pole[i-2][j], pole[i-2][j], graph);
-                    tryAddEdge(id_act, id_pole[i-2][j+1], pole[i-2][j+1], graph);
-                    tryAddEdge(id_act, id_pole[i-1][j+2], pole[i-1][j+2], graph);
-                    tryAddEdge(id_act, id_pole[i][j+2], pole[i][j+2], graph);
-                    tryAddEdge(id_act, id_pole[i+1][j+1], pole[i+1][j+1], graph);
-                    tryAddEdge(id_act, id_pole[i+1][j], pole[i+1][j], graph);
-                    tryAddEdge(id_act, id_pole[i+1][j-1], pole[i+1][j-1], graph);
-                    tryAddEdge(id_act, id_pole[i][j-2], pole[i][j-2], graph);
-                    tryAddEdge(id_act, id_pole[i-1][j-2], pole[i-1][j-2], graph);
+                    tryAddEdge(id_act, id_pole[i-2][j-1], pole[i-2][j-1], graph, true);
+                    tryAddEdge(id_act, id_pole[i-2][j], pole[i-2][j], graph, true);
+                    tryAddEdge(id_act, id_pole[i-2][j+1], pole[i-2][j+1], graph, true);
+                    tryAddEdge(id_act, id_pole[i-1][j+2], pole[i-1][j+2], graph, true);
+                    tryAddEdge(id_act, id_pole[i][j+2], pole[i][j+2], graph, true);
+                    tryAddEdge(id_act, id_pole[i+1][j+1], pole[i+1][j+1], graph, true);
+                    tryAddEdge(id_act, id_pole[i+1][j], pole[i+1][j], graph, true);
+                    tryAddEdge(id_act, id_pole[i+1][j-1], pole[i+1][j-1], graph, true);
+                    tryAddEdge(id_act, id_pole[i][j-2], pole[i][j-2], graph, true);
+                    tryAddEdge(id_act, id_pole[i-1][j-2], pole[i-1][j-2], graph, true);
                 }
             }
         }
+        graph.addEdge(62, 51);
+        graph.addEdge(51, 62);
         System.out.println(graph.getAdjLists());
         return graph;
     }
 
 
-    private void tryAddEdge(int from, int to, int original, Graph graph) {
+    private void tryAddEdge(int from, int to, int original, Graph graph, boolean isCastle) {
         if (original == 3 || original == 4 || original == 5) {
             graph.addEdge(from, to);
-            if(from == 5) graph.addEdge(to, from);
+            if(isCastle) {
+                graph.addEdge(to, from);
+            }
+
         }
     }
 

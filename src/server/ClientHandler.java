@@ -38,21 +38,32 @@ public class ClientHandler implements Runnable {
     }
 
 
-    private String handleClientsRequestAndRespond(String clientsRequest) {
+    private void handleClientsRequestAndRespond(String clientsRequest) {
         String[] clientRequestTokens = clientsRequest.split(" ");
 
         if(clientRequestTokens.length == 0)
         {
-            return unknownRequestMsg;
+            return;
         }
 
         switch (clientRequestTokens[0])
         {
             case "NICK":
-                return server.handleNickRequest(clientRequestTokens);
+                server.handleNickRequest(clientRequestTokens);
+                break;
+            case "START_MOVE":
+                server.handleStartMoveRequest(clientRequestTokens);
+                break;
+            case "CHANGE_POSITION" :
+                server.handleChangePositionRequest(clientRequestTokens);
+                break;
+            case "END_MOVE" :
+                server.handleEndMove();
+                break;
+
         }
 
-        return unknownRequestMsg;
+        return;
     }
 
 
@@ -64,9 +75,8 @@ public class ClientHandler implements Runnable {
             while(true) {
                 String clientRequest = in.readLine();
                 if (clientRequest == null) break;
-
-                String serversResponse = handleClientsRequestAndRespond(clientRequest);
-                out.println(serversResponse);
+                System.out.println(clientRequest);
+                handleClientsRequestAndRespond(clientRequest);
 
             }
         } catch (IOException e) {

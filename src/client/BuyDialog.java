@@ -133,7 +133,7 @@ public class BuyDialog {
                     alert.show();
                 } else {
                     int x = playerTemplate.getMoney() - price;
-                    playerTemplate.setMoney("" + x);
+                    playerTemplate.setMoney("" + x + " F");
                     for (Chip chip : chips) {
                         if(chip.getIsPositive()) playerTemplate.addPositiveChips(chip);
                         else playerTemplate.addNegativeChips(chip);

@@ -14,14 +14,15 @@ public class Server {
     private static ArrayList<ClientHandler> clients = new ArrayList<>();
     private static ExecutorService pool = Executors.newFixedThreadPool(4);
     private static int playersConnected = 0;
+    private Game game;
 
 
     public static void main(String[] args) throws IOException {
-        ServerSocket ss = new ServerSocket(22223);
+        ServerSocket ss = new ServerSocket(22222);
         int id = 1;
 
         while(true) {
-            if(id > 1) break;
+            if(id > 2) break;
             Socket client = ss.accept();
             System.out.println(id  + ". client connected");
             ClientHandler clientThread = new ClientHandler(client, id, clients, new Server());
@@ -36,14 +37,31 @@ public class Server {
 
     }
 
-    public String handleNickRequest(String[] clientRequestTokens) {
+    public void handleChangePositionRequest(String[] clientRequestTokens) {
+        this.game.changePosition(clientRequestTokens);
+    }
+
+    public void handleStartMoveRequest(String[] clientRequestTokens) {
+        System.out.println("start 2");
+        this.game.startMove(clientRequestTokens);
+        System.out.println("koniec 2");
+    }
+
+
+
+    public void handleNickRequest(String[] clientRequestTokens) {
         players.add(clientRequestTokens[1]);
         playersConnected++;
-        if(playersConnected == 1) {
-            Game game = new Game(players, clients);
+        if(playersConnected == 2) {
+            System.out.println("Start 1");
+            this.game = new Game(players, clients);
             game.createGame();
+            System.out.println("Koniec 1");
         }
-        return "OK";
+    }
+
+    public void handleEndMove() {
+        this.game.endMove();
     }
 
 
