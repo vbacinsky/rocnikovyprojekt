@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c8cb4527-365e-40d0-9d3e-c90105cd9188" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/resources/marco_polo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/rozbijac_ciest.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/rychlobeh.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/zbojnik.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/BuyDialog.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/BuyDialog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Cesta.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Cesta.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Chip.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Chip.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/GameClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/GameClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Policko.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/Policko.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/ServerConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/ServerConnection.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/StartDialog.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/client/StartDialog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/server/ClientHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/server/ClientHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/rocnikovy_projekt/server/server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/rocnikovy_projekt/server/server.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,7 +32,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/client/Mapa.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
+            <state relative-caret-position="690">
               <caret line="103" column="33" selection-start-line="103" selection-start-column="33" selection-end-line="103" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -249,6 +244,11 @@
             <path>
               <item name="rocnikovy_projekt" type="b2602c69:ProjectViewProjectNode" />
               <item name="rocnikovy_projekt" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rocnikovy_projekt" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rocnikovy_projekt" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -279,7 +279,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1597576272020" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1597576325238" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -367,7 +367,7 @@
       <workItem from="1597073765961" duration="29820000" />
       <workItem from="1597220666654" duration="103995000" />
       <workItem from="1597520743983" duration="17814000" />
-      <workItem from="1597575789107" duration="480000" />
+      <workItem from="1597575789107" duration="1141000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1596645862682</created>
@@ -502,11 +502,18 @@
       <option name="project" value="LOCAL" />
       <updated>1597576264836</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Before Fix">
+      <created>1597576306304</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1597576306304</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="314846000" />
+    <option name="totallyTimeSpent" value="315483000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -519,7 +526,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8598485" visible="true" weight="0.13959731" />
       <window_info id="Structure" order="1" sideWeight="0.14015152" side_tool="true" weight="0.1375839" />
@@ -931,7 +937,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/client/Mapa.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
+        <state relative-caret-position="690">
           <caret line="103" column="33" selection-start-line="103" selection-start-column="33" selection-end-line="103" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
