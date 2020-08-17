@@ -34,7 +34,6 @@ public class Hrad extends StackPane implements Policko {
                     gameClient.posunFigurkou(this.id, this);
                     setFigurku(gameClient.getColor());
 
-                    // potom poslat na server request kde som sa posunul
                     this.isActive = false;
                 }
             }

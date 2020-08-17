@@ -9,12 +9,6 @@ public class Player {
     private String color;
     private boolean stopedOneMove = false;
 
-    //asi nieco ze kde sa nachadza jeho figurka
-
-
-
-
-
     public Player(String nick, boolean startedMission, Mission currentMission, int start_position, String color) {
         this.color = color;
         this.act_position = start_position;
@@ -22,7 +16,6 @@ public class Player {
         this.startedMission = startedMission;
         this.currentMission = currentMission;
     }
-
 
     public int getPoints() {
         return this.points;

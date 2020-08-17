@@ -47,7 +47,6 @@ public class GameClient extends Application {
         Platform.exit();
     }
 
-
     public static void main(String[] args) throws IOException {
         launch(args);
     }
@@ -90,23 +89,13 @@ public class GameClient extends Application {
         mapTemplates.put(myInfo.getNick(), downLeftPlayer);
         mapTemplates.put(opponentInfo.getNick(), upLeftPlayer);
 
-
-        //PlayerTemplate upRightPlayer = new PlayerTemplate("Player 2", true, null, null, "bla", "bla", null);
-        //PlayerTemplate downRightPlayer = new PlayerTemplate("Player 3", true, null, null, "bla", "bla", null);
-
         VBox leftBox = createBox(upLeftPlayer, downLeftPlayer);
         this.map = new Mapa(this, myInfo, opponentInfo);
-        //VBox rightBox = createBox(upRightPlayer, downRightPlayer);
-
         root.getChildren().addAll(leftBox, map);
-
 
         Platform.runLater(() -> {
             border.getChildren().add(root);
         });
-
-
-
     }
 
     public void vyber_policko(String[] serverResponseTokens) {
@@ -123,7 +112,6 @@ public class GameClient extends Application {
 
     public void change_position_opponent(String[] serverResponseTokens) {
 
-        //prehladnejsie
         this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[2])).setFigurku(findColor(serverResponseTokens[3]));
 
         this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[4])).deleteFigurku();
@@ -162,8 +150,6 @@ public class GameClient extends Application {
 
     }
 
-
-
     public void new_mission(String[] serverResponseTokens) {
 
         PlayerTemplate template = this.mapTemplates.get(serverResponseTokens[1]);
@@ -182,12 +168,9 @@ public class GameClient extends Application {
 
     }
 
-
     public void startMove(String nick) {
         this.serverConnection.sendMessage("START_MOVE " + nick);
     }
-
-
 
     public void vstupil_na_policko_s_cipom(Policko newActPolicko, String znak) {
         for(Policko pol : this.activeList) {
@@ -198,10 +181,6 @@ public class GameClient extends Application {
         message = "ENTERED_ON_CHIP " + this.nick + " " + znak + " " + newActPolicko.getID();
         this.serverConnection.sendMessage(message);
     }
-
-
-
-
 
     public void posunFigurkou(int id, Policko newActPolicko) {
         this.map.getAct_policko().deleteFigurku();
@@ -214,8 +193,6 @@ public class GameClient extends Application {
         String message;
         message = "CHANGE_POSITION " + this.nick + " " + id;
         this.serverConnection.sendMessage(message);
-
-
     }
 
     public void end_game(String[] serverResponseTokens) {
@@ -247,7 +224,6 @@ public class GameClient extends Application {
         boolean itIsMe = serverResponseTokens[1].equals(this.nick);
         Policko newPolicko = this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[3]));
 
-
         if(!serverResponseTokens[2].equals("B")) {
             this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[3])).setFigurku(findColor(serverResponseTokens[4]));
             this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[5])).deleteFigurku();
@@ -257,7 +233,6 @@ public class GameClient extends Application {
                 this.act_position = newPolicko.getID();
             }
         }
-
 
         for(Policko pol : this.activeList) {
             pol.setNormalBackround();
@@ -273,13 +248,7 @@ public class GameClient extends Application {
         if(serverResponseTokens[2].equals("Z")) this.mapTemplates.get(serverResponseTokens[1]).setNormalColorFrom();
     }
 
-
-
-
     public void setNewPlayerMove(String[] serverResponseTokens) {
-
-        //pomenit to tak aby si pamatal len gameclient ze ci som na tahu alebo nie
-
         if(serverResponseTokens[1].equals(this.nick)) {
             this.setIsYourTurn(true);
             mapTemplates.get(this.nick).setIsYourTurn(true);
@@ -294,8 +263,6 @@ public class GameClient extends Application {
         this.serverConnection.sendMessage("END_MOVE");
     }
 
-
-
     public boolean getIsYourTurn() {
         return this.isYourTurn;
     }
@@ -303,7 +270,6 @@ public class GameClient extends Application {
     public void setIsYourTurn(boolean bool) {
         this.isYourTurn = bool;
     }
-
 
     private VBox createBox(PlayerTemplate playerUp, PlayerTemplate playerDown) {
         VBox box = new VBox(20);
@@ -316,7 +282,6 @@ public class GameClient extends Application {
         rectangle2.setFill(Color.DARKORANGE);
         rectangle2.setArcHeight(50);
         rectangle2.setArcWidth(50);
-
 
         box.getChildren().addAll(
                 new StackPane(rectangle, playerUp),
@@ -361,8 +326,6 @@ public class GameClient extends Application {
     public void put_new_chip(Color color, String znak, int id) {
         String stringColor = "";
 
-
-        // TODO opravit jednoduchsie
         if(color == Color.BLUE) {
             stringColor = "BLUE";
         }
@@ -379,7 +342,6 @@ public class GameClient extends Application {
         String string = "PUT_NEW_CHIP " + stringColor + " " + znak + " " + id;
         this.serverConnection.sendMessage(string);
     }
-
 
     public void setMessage(String string) {
         this.message.setText(string);

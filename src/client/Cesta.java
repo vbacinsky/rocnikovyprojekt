@@ -8,8 +8,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import server.Game;
-
 
 public class Cesta  extends StackPane implements Policko{
     private int id;
@@ -17,11 +15,7 @@ public class Cesta  extends StackPane implements Policko{
     private Color color = Color.WHITE;
     private Label label = new Label("");
     private boolean hasChip = false;
-
-    //nemusi byt ako premenna
     private Chip act_chip = null;
-
-
     private Circle figurka = new Circle();
     private Rectangle rectangle;
     private Circle circle;
@@ -42,18 +36,13 @@ public class Cesta  extends StackPane implements Policko{
                 if (this.isActive) {
                     this.rectangle.setFill(colorBackround);
 
-                    //na policku bud nic nie je, alebo su tam jeho chipy
                     if(this.circle.getFill() == Color.WHITE || this.circle.getFill() == this.gameClient.getColor()) {
                         setFigurku(gameClient.getColor());
                         gameClient.posunFigurkou(this.id, this);
-                    }
-
-
-                    else {
+                    } else {
                         this.hasChip = false;
                         gameClient.vstupil_na_policko_s_cipom(this, this.label.getText());
                     }
-
                 }
                 if (gameClient.getIsChipPressed() && !this.hasChip) {
                     act_chip = gameClient.getPressedChip();

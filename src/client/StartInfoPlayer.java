@@ -85,6 +85,4 @@ public class StartInfoPlayer {
         return this.image;
     }
 
-
-
 }

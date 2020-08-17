@@ -9,27 +9,24 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-
     private static ArrayList<String> players = new ArrayList<>();
     private static ArrayList<ClientHandler> clients = new ArrayList<>();
     private static ExecutorService pool = Executors.newFixedThreadPool(4);
     private static int playersConnected = 0;
     private Game game;
 
-
     public void run() throws IOException {
         ServerSocket ss = new ServerSocket(22222);
         int id = 1;
 
-        while(true) {
-            if(id > 2) break;
+        do {
             Socket client = ss.accept();
-            System.out.println(id  + ". client connected");
-            ClientHandler clientThread = new ClientHandler(client, id, clients, this);
+            System.out.println(id + ". client connected");
+            ClientHandler clientThread = new ClientHandler(client, this);
             clients.add(clientThread);
             pool.execute(clientThread);
             id++;
-        }
+        } while (id <= 2);
         pool.shutdown();
     }
 
@@ -41,14 +38,11 @@ public class Server {
         this.game.startMove(clientRequestTokens);
     }
 
-
-
     public void handleNickRequest(String[] clientRequestTokens) {
         players.add(clientRequestTokens[1]);
         playersConnected++;
         if(playersConnected == 2) {
             this.game = new Game(players, clients);
-            game.createGame();
         }
     }
 
@@ -67,11 +61,4 @@ public class Server {
     public void handleSomeoneEnteredOnCip(String[] clientRequestTokens) {
         this.game.someoneEnteredOnChip(clientRequestTokens);
     }
-
-    public static ArrayList<String> getPlayers() {
-        return players;
-    }
-
-
-
 }

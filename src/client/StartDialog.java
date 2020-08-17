@@ -36,7 +36,7 @@ public class StartDialog {
 
         border.setCenter(central);
 
-        Label lblnick = new Label("Enter your nickname, max 12 characters");
+        Label lblnick = new Label("Enter your nickname");
         lblnick.setFont(new Font("Cambria", 32));
         central.getChildren().add(lblnick);
 
@@ -67,9 +67,4 @@ public class StartDialog {
         dialogStage.showAndWait();
         return this.serverConnection;
     }
-
-
-
-
-
 }

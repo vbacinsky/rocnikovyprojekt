@@ -19,23 +19,10 @@ import java.util.ArrayList;
 public class BuyDialog {
 
     private static  ArrayList<Chip> chips = new ArrayList<>();
-
     private static PlayerTemplate playerTemplate;
     private static Button btnOk;
     private static int price = 0;
-
     private Stage dialogStage = new Stage();
-
-    private final ObservableList<Information> dataNegative =
-            FXCollections.observableArrayList(
-                    new Information("Z - Zbojnici", "1 F"),
-                    new Information("RC - Rozbita cesta", "1 F"),
-                    new Information("B - Bazina", "1 F")
-            );
-
-    private TableView<Information> tableNegative = new TableChips("negative", dataNegative);
-
-
 
     public BuyDialog(PlayerTemplate playerTemplate) {
         this.playerTemplate = playerTemplate;
@@ -45,8 +32,6 @@ public class BuyDialog {
         dialogStage.setWidth(550);
         dialogStage.setHeight(600);
 
-
-
         final VBox mainBox = new VBox();
         mainBox.setSpacing(5);
         mainBox.setPadding(new Insets(10, 10, 10, 10));
@@ -54,7 +39,6 @@ public class BuyDialog {
 
         final Label labelNegative = new Label("Negative chips");
         labelNegative.setFont(new Font("Arial", 20));
-
 
         scene.getStylesheets().add("styles/styles.css");
 
@@ -71,14 +55,16 @@ public class BuyDialog {
         negativeBox.setPadding(new Insets(10, 10, 10, 10));
         negativeBox.setAlignment(Pos.CENTER);
 
+        ObservableList<Information> dataNegative = FXCollections.observableArrayList(
+                new Information("Z - Zbojnici", "1 F"),
+                new Information("RC - Rozbita cesta", "1 F"),
+                new Information("B - Bazina", "1 F")
+        );
+
+        TableChips tableNegative = new TableChips("negative", dataNegative);
         negativeBox.getChildren().addAll(tableNegative, buttonBoxN);
-
-
         mainBox.getChildren().addAll(labelNegative, negativeBox, btnOk);
-
-
         ((Group) scene.getRoot()).getChildren().addAll(mainBox);
-
 
         btnOk.setOnAction((
                 ActionEvent event) -> {
@@ -128,7 +114,6 @@ public class BuyDialog {
             this.cena = new SimpleStringProperty(price);
         }
 
-
         public String getNazovzetonu() {
             return nazovzetonu.get();
         }
@@ -145,9 +130,6 @@ public class BuyDialog {
             cena.set(vName);
         }
     }
-
-
-
 
     private static class TableChips extends TableView {
 
@@ -200,7 +182,6 @@ public class BuyDialog {
                     }
 
                     chips.add(new Chip(playerTemplate.getColor(), this.znak, playerTemplate));
-
                     countChips++;
                     String string;
                     string = "" + countChips;
@@ -237,7 +218,6 @@ public class BuyDialog {
                                 break;
                             }
                         }
-
                         btnOk.setText("BUY FOR " + price + " F");
                     }
                 } catch (NumberFormatException e) {

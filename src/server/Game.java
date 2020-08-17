@@ -33,15 +33,12 @@ public class Game {
         }
 
         String message;
+        String WhoisOnTurn = "." + players.get(idWhoIsOnTurn).getNick();
 
-        String WhoisOnTurn = "." + players.get(idWhoIsOnTurn).getNick(); //zmenit na 4
-        //vygenerovat id policok kde moze stupit aby si mohol client vybrat
-
-        message = "start " + WhoisOnTurn + " " + players.get(0).getNick() + " " + players.get(0).getColor() + " " + players.get(0).getCurrentMission().getFrom() + " " + players.get(0).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(0).getAct_position() + " " +
-                players.get(1).getNick() + " " + players.get(1).getColor() + " " +  players.get(1).getCurrentMission().getFrom() + " " +  players.get(1).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(1).getAct_position();
-        //players.get(1) + " " + randomColor() + " " + listOfMissions.get(1).getFrom() + " " + listOfMissions.get(1).getTo() + " " + "rychlobeh" + " " +
-        //players.get(0) + " " + randomColor() + " " + listOfMissions.get(0).getFrom() + " " + listOfMissions.get(0).getTo() + " " + "rychlobeh");
-
+        Player player1 = players.get(0);
+        Player player2 = players.get(1);
+        message = "start " + WhoisOnTurn + " " + player1 .getNick() + " " + player1.getColor() + " " + player1.getCurrentMission().getFrom() + " " + player1.getCurrentMission().getTo() + " " + randomCharacter() + " " + player1.getAct_position() + " " +
+                player2 .getNick() + " " + player2 .getColor() + " " +  player2 .getCurrentMission().getFrom() + " " +  player2 .getCurrentMission().getTo() + " " + randomCharacter() + " " + player2 .getAct_position();
         sendToClientsMessage(message);
     }
 
@@ -65,7 +62,6 @@ public class Game {
     }
 
     public void putNewChip(String clientRequestTokens) {
-
         sendToClientsMessage(clientRequestTokens);
     }
 
@@ -88,10 +84,6 @@ public class Game {
 
         message = message + player.getNick() + " " + clientRequestTokens[2] + " " + clientRequestTokens[3] + " " + player.getColor() + oldPosition;
         sendToClientsMessage(message);
-
-
-
-
     }
 
     public void changePosition(String[] clientRequestTokens) {
@@ -103,7 +95,6 @@ public class Game {
 
         sendToClientsMessage(message);
 
-        //posli vseetkym clientom
         if(act_policko <= 14) {
             check_if_started_mission(nick, act_policko);
             check_if_finished_mission(nick, act_policko);
@@ -112,31 +103,27 @@ public class Game {
 
     private void check_if_started_mission(String nick, int act_policko) {
         Player player = playersByNick.get(nick);
-        Mission currentm = player.getCurrentMission();
-        if(act_policko == castlesByID.get(currentm.getFrom())) {
+        Mission current_mission = player.getCurrentMission();
+        if(act_policko == castlesByID.get(current_mission.getFrom())) {
             player.setStartedMission(true);
             String message = "STARTED_MISSION " + nick;
             sendToClientsMessage(message);
         }
     }
 
-
     private void check_if_finished_mission(String nick, int act_policko) {
         Player player = playersByNick.get(nick);
         Mission currentm = player.getCurrentMission();
         if(player.getStartedMission() && act_policko == castlesByID.get(currentm.getTo())) {
 
-            //poslat clientom parametre novej misie
             Mission mission = randomMission();
             player.setCurrentMission(mission);
-
 
             String isStarted = "false";
             if(mission.getFrom().equals(idByCastles.get(act_policko))) {
                 player.setStartedMission(true);
                 isStarted = "true";
-            }
-            else player.setStartedMission(false);
+            } else player.setStartedMission(false);
 
             player.setPoints(Integer.valueOf(currentm.getPoints()));
             String message;
@@ -148,15 +135,10 @@ public class Game {
 
             }
             sendToClientsMessage(message);
-
         }
-
     }
 
-
     public void startMove(String[] clientRequestTokens) {
-
-
         Random random = new Random();
         int cislo = random.nextInt(6) + 1;
 
@@ -166,21 +148,13 @@ public class Game {
         int act_position = player.getAct_position();
         ArrayList<Integer> listPolicok = findVerticesInDsitance(act_position, cislo);
 
-        //funkcia na vytvorenie message z pola stringov
-
-
         StringBuilder message;
-
         message = new StringBuilder("VYBER_POLICKO " + nick);
         for (Integer policko : listPolicok) {
             message.append(" ").append(policko);
         }
-
         sendToClientsMessage(message.toString());
-
-
     }
-
 
     private ArrayList<Integer> findVerticesInDsitance(int start, int distance) {
         ArrayList<ArrayList<Integer>> vrcholy_vo_vzdialenosti = new ArrayList<>();
@@ -218,7 +192,6 @@ public class Game {
 
     public boolean checkWinner(Player player) {
         return (player.getPoints() >= 10);
-
     }
 
     private void sendToClientsMessage(String message) {
@@ -227,11 +200,8 @@ public class Game {
         }
     }
 
-
-
     //______________________________________________________________________________________//
     //create and random stuff
-
 
     private Map<String, Integer> createMap() {
         Map<String, Integer> map = new HashMap<>();
@@ -289,11 +259,6 @@ public class Game {
         missions.add(new Mission("Trnava", "Kamenicky_hrad","1"));
         missions.add(new Mission("Trnava", "Kapusany", "2"));
         missions.add(new Mission("Sasov", "Hanigovsky_hrad", "4"));
-
-
-
-
-
 
         return missions;
     }
@@ -440,8 +405,4 @@ public class Game {
 
         return string;
     }
-
-
-
-
 }

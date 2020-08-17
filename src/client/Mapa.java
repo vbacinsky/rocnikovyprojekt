@@ -98,9 +98,7 @@ public class Mapa extends GridPane {
         makeNameCastle("FI", "LAKO", "VO", 17, 16, 1);
 
 
-
         for(Policko x : polickoList) {
-            //kludne cez map
             if(x.getID() == myInfo.getActPosition()) {
                 x.setFigurku(myInfo.getColor());
                 this.act_policko = x;
@@ -114,7 +112,6 @@ public class Mapa extends GridPane {
 
     private void makeNameCastle(String a, String b, String c, int size, int row, int col) {
 
-        //skratit
         Text first = new Text(a);
         first.setFont(new Font(size));
         first.setUnderline(true);
