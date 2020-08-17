@@ -30,11 +30,7 @@ public class Server {
             pool.execute(clientThread);
             id++;
         }
-
-        for (ClientHandler client : clients) {
-            client.ready();
-        }
-
+        pool.shutdown();
     }
 
     public void handleChangePositionRequest(String[] clientRequestTokens) {
@@ -42,9 +38,7 @@ public class Server {
     }
 
     public void handleStartMoveRequest(String[] clientRequestTokens) {
-        System.out.println("start 2");
         this.game.startMove(clientRequestTokens);
-        System.out.println("koniec 2");
     }
 
 
@@ -53,10 +47,8 @@ public class Server {
         players.add(clientRequestTokens[1]);
         playersConnected++;
         if(playersConnected == 2) {
-            System.out.println("Start 1");
             this.game = new Game(players, clients);
             game.createGame();
-            System.out.println("Koniec 1");
         }
     }
 
@@ -64,6 +56,17 @@ public class Server {
         this.game.endMove();
     }
 
+    public void handleTerminate() {
+        this.game.terminate();
+    }
+
+    public void handlePutNewChip(String clientRequestTokens) {
+        this.game.putNewChip(clientRequestTokens);
+    }
+
+    public void handleSomeoneEnteredOnCip(String[] clientRequestTokens) {
+        this.game.someoneEnteredOnChip(clientRequestTokens);
+    }
 
     public static ArrayList<String> getPlayers() {
         return players;

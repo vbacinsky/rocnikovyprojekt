@@ -7,6 +7,7 @@ public class Player {
     private int points = 0;
     private int act_position;
     private String color;
+    private boolean stopedOneMove = false;
 
     //asi nieco ze kde sa nachadza jeho figurka
 
@@ -57,6 +58,14 @@ public class Player {
 
     public void setPoints(int plusPoints) {
         this.points += plusPoints;
+    }
+
+    public void setStopedOneMove(boolean bool) {
+        this.stopedOneMove = bool;
+    }
+
+    public boolean getStopedOneMove() {
+        return this.stopedOneMove;
     }
 
     public String getColor() {

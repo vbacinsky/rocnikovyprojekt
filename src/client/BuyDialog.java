@@ -1,6 +1,4 @@
 package client;
-
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 
 public class BuyDialog {
@@ -29,13 +26,6 @@ public class BuyDialog {
 
     private Stage dialogStage = new Stage();
 
-    private final ObservableList<Information> dataPositive =
-            FXCollections.observableArrayList(
-                    new Information("O - Ochranka", "2 F"),
-                    new Information("NK - Nove koleso", "2 F"),
-                    new Information("S - Sprievodca", "2 F")
-            );
-
     private final ObservableList<Information> dataNegative =
             FXCollections.observableArrayList(
                     new Information("Z - Zbojnici", "1 F"),
@@ -43,7 +33,6 @@ public class BuyDialog {
                     new Information("B - Bazina", "1 F")
             );
 
-    private TableView<Information> tablePositive = new TableChips("positive", dataPositive);
     private TableView<Information> tableNegative = new TableChips("negative", dataNegative);
 
 
@@ -63,33 +52,13 @@ public class BuyDialog {
         mainBox.setPadding(new Insets(10, 10, 10, 10));
         mainBox.setAlignment(Pos.CENTER);
 
-        final Label labelPositive = new Label("Positive chips");
-        labelPositive.setFont(new Font("Arial", 20));
-
-
         final Label labelNegative = new Label("Negative chips");
         labelNegative.setFont(new Font("Arial", 20));
 
 
-        final HBox positiveBox = new HBox();
-        positiveBox.setSpacing(5);
-        positiveBox.setPadding(new Insets(10, 10, 10, 10));
-        positiveBox.setAlignment(Pos.CENTER);
-
-
-
-        final VBox buttonBox = new VBox();
-        buttonBox.setSpacing(5);
-        buttonBox.setPadding(new Insets(40, 10, 10, 10));
-
-        buttonBox.getChildren().addAll(new ButtonBox(true, "O"), new ButtonBox(true, "NK"), new ButtonBox(true, "S"));
-
-        positiveBox.getChildren().addAll(tablePositive, buttonBox);
-
         scene.getStylesheets().add("styles/styles.css");
 
-
-        this.btnOk = new Button("BUY FOR 0F");
+        btnOk = new Button("BUY FOR 0F");
 
         final VBox buttonBoxN = new VBox();
         buttonBoxN.setSpacing(5);
@@ -105,19 +74,10 @@ public class BuyDialog {
         negativeBox.getChildren().addAll(tableNegative, buttonBoxN);
 
 
-        mainBox.getChildren().addAll(labelPositive, positiveBox, labelNegative, negativeBox, btnOk);
+        mainBox.getChildren().addAll(labelNegative, negativeBox, btnOk);
 
 
         ((Group) scene.getRoot()).getChildren().addAll(mainBox);
-
-
-
-
-
-
-
-
-
 
 
         btnOk.setOnAction((
@@ -135,8 +95,7 @@ public class BuyDialog {
                     int x = playerTemplate.getMoney() - price;
                     playerTemplate.setMoney("" + x + " F");
                     for (Chip chip : chips) {
-                        if(chip.getIsPositive()) playerTemplate.addPositiveChips(chip);
-                        else playerTemplate.addNegativeChips(chip);
+                        playerTemplate.addNegativeChips(chip);
                     }
                 }
                 price = 0;
@@ -240,8 +199,7 @@ public class BuyDialog {
                         price = price + 1;
                     }
 
-                    chips.add(new Chip(isPositive, playerTemplate.getColor(), this.znak, playerTemplate));
-
+                    chips.add(new Chip(playerTemplate.getColor(), this.znak, playerTemplate));
 
                     countChips++;
                     String string;
@@ -255,7 +213,6 @@ public class BuyDialog {
                     System.out.println("chyba");
                 }
             });
-
 
             Remove.setOnAction((
                     ActionEvent event) -> {
@@ -274,7 +231,6 @@ public class BuyDialog {
                         string = "" + countChips;
                         pocitadloLabel.setText(string);
 
-
                         for(Chip chip : chips) {
                             if(chip.getZnak() == this.znak) {
                                 chips.remove(chip);
@@ -282,17 +238,12 @@ public class BuyDialog {
                             }
                         }
 
-
                         btnOk.setText("BUY FOR " + price + " F");
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("chyba");
                 }
             });
-
         }
     }
-
-
-
 }

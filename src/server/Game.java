@@ -1,15 +1,9 @@
 package server;
 
-import com.sun.corba.se.impl.protocol.MinimalServantCacheLocalCRDImpl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
-
-//####### Misie farby a postavy v jednej triede, neskor :D ##########
-
-// rovnako vytvorit triedu character a jej funckionalitu ale az na konci
 
 public class Game {
     private  ArrayList<String> playersNick;
@@ -21,20 +15,13 @@ public class Game {
     private Map<String, Integer> castlesByID = createMap();
     private ArrayList<String> idByCastles = createArray();
     private int idWhoIsOnTurn = 0;
-
-
     private Graph graph = createGraph();
     private Map<String, Player> playersByNick = new HashMap<>();
-
 
 
     public Game(ArrayList<String> playersNick, ArrayList<ClientHandler> clients) {
         this.playersNick = playersNick;
         this.clients = clients;
-    }
-
-
-    public void createGame() {
 
         for (String nick : playersNick) {
             Mission mission = randomMission();
@@ -45,37 +32,67 @@ public class Game {
             playersByNick.put(nick, player);
         }
 
-
         String message;
-
-        Random random = new Random();
 
         String WhoisOnTurn = "." + players.get(idWhoIsOnTurn).getNick(); //zmenit na 4
         //vygenerovat id policok kde moze stupit aby si mohol client vybrat
 
         message = "start " + WhoisOnTurn + " " + players.get(0).getNick() + " " + players.get(0).getColor() + " " + players.get(0).getCurrentMission().getFrom() + " " + players.get(0).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(0).getAct_position() + " " +
-        players.get(1).getNick() + " " + players.get(1).getColor() + " " +  players.get(1).getCurrentMission().getFrom() + " " +  players.get(1).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(1).getAct_position();
+                players.get(1).getNick() + " " + players.get(1).getColor() + " " +  players.get(1).getCurrentMission().getFrom() + " " +  players.get(1).getCurrentMission().getTo() + " " + randomCharacter() + " " + players.get(1).getAct_position();
         //players.get(1) + " " + randomColor() + " " + listOfMissions.get(1).getFrom() + " " + listOfMissions.get(1).getTo() + " " + "rychlobeh" + " " +
         //players.get(0) + " " + randomColor() + " " + listOfMissions.get(0).getFrom() + " " + listOfMissions.get(0).getTo() + " " + "rychlobeh");
 
-
-        for (ClientHandler client : clients) {
-            client.outMessage(message);
-        }
+        sendToClientsMessage(message);
     }
-
 
     public void endMove() {
         if(this.idWhoIsOnTurn == 1) idWhoIsOnTurn = 0;
         else idWhoIsOnTurn++;
-        String message = "NEW_PLAYER_MOVE" + " " + players.get(idWhoIsOnTurn).getNick();
 
-        for (ClientHandler client : clients) {
-            client.outMessage(message);
+        if (players.get(idWhoIsOnTurn).getStopedOneMove()) {
+            players.get(idWhoIsOnTurn).setStopedOneMove(false);
+            if(this.idWhoIsOnTurn == 1) idWhoIsOnTurn = 0;
+            else idWhoIsOnTurn++;
         }
+
+        String message = "NEW_PLAYER_MOVE" + " " + players.get(idWhoIsOnTurn).getNick();
+        sendToClientsMessage(message);
     }
 
+    public void terminate() {
+        String message = "SERVER_END";
+        sendToClientsMessage(message);
+    }
 
+    public void putNewChip(String clientRequestTokens) {
+
+        sendToClientsMessage(clientRequestTokens);
+    }
+
+    public void someoneEnteredOnChip(String[] clientRequestTokens) {
+        Player player = playersByNick.get(clientRequestTokens[1]);
+        String oldPosition = " " + player.getAct_position();
+        String message = "SOMEONE_ENTERED_ON_CHIP ";
+        switch (clientRequestTokens[2]) {
+            case "B":
+                break;
+            case "RC" :
+                player.setAct_position(Integer.valueOf(clientRequestTokens[3]));
+                player.setStopedOneMove(true);
+                break;
+            case "Z" :
+                player.setAct_position(Integer.valueOf(clientRequestTokens[3]));
+                player.setStartedMission(false);
+                break;
+        }
+
+        message = message + player.getNick() + " " + clientRequestTokens[2] + " " + clientRequestTokens[3] + " " + player.getColor() + oldPosition;
+        sendToClientsMessage(message);
+
+
+
+
+    }
 
     public void changePosition(String[] clientRequestTokens) {
         String nick = clientRequestTokens[1];
@@ -84,10 +101,7 @@ public class Game {
         playersByNick.get(nick).setAct_position(act_policko);
         String message = "CHANGE_POSITION_OPPONENT " + nick + " " + clientRequestTokens[2] + " " + playersByNick.get(nick).getColor() + " " + previousPolicko;
 
-        for (ClientHandler client : clients) {
-            client.outMessage(message);
-        }
-
+        sendToClientsMessage(message);
 
         //posli vseetkym clientom
         if(act_policko <= 14) {
@@ -101,12 +115,8 @@ public class Game {
         Mission currentm = player.getCurrentMission();
         if(act_policko == castlesByID.get(currentm.getFrom())) {
             player.setStartedMission(true);
-
-
             String message = "STARTED_MISSION " + nick;
-            for (ClientHandler client : clients) {
-                client.outMessage(message);
-            }
+            sendToClientsMessage(message);
         }
     }
 
@@ -117,7 +127,6 @@ public class Game {
         if(player.getStartedMission() && act_policko == castlesByID.get(currentm.getTo())) {
 
             //poslat clientom parametre novej misie
-
             Mission mission = randomMission();
             player.setCurrentMission(mission);
 
@@ -133,14 +142,12 @@ public class Game {
             String message;
             if (checkWinner(player)) {
                 message = "END_GAME " + nick;
-                System.out.println("KONEEC");
+                System.out.println("KONIEC");
             } else {
                 message = "NEW_MISSION " + nick + " " + mission.getFrom() + " " + mission.getTo() + " " + currentm.getPoints() + " " + isStarted;
 
             }
-            for (ClientHandler client : clients) {
-                client.outMessage(message);
-            }
+            sendToClientsMessage(message);
 
         }
 
@@ -151,7 +158,7 @@ public class Game {
 
 
         Random random = new Random();
-        int cislo = random.nextInt(20) + 1;
+        int cislo = random.nextInt(6) + 1;
 
         String nick = clientRequestTokens[1];
         Player player = playersByNick.get(nick);
@@ -169,9 +176,7 @@ public class Game {
             message.append(" ").append(policko);
         }
 
-        for (ClientHandler client : clients) {
-            client.outMessage(message.toString());
-        }
+        sendToClientsMessage(message.toString());
 
 
     }
@@ -189,10 +194,6 @@ public class Game {
         vzdialenosti[start] = 0;
         vrcholy_vo_vzdialenosti.add(new ArrayList<>());
         vrcholy_vo_vzdialenosti.get(0).add(start);
-        //vrcholy_vo_vzdialenosti = [[start]]
-
-        System.out.println(start);
-        System.out.println(distance);
 
         for (int aktualna_vzdialenost = 0; aktualna_vzdialenost < distance; aktualna_vzdialenost++) {
             vrcholy_vo_vzdialenosti.add(new ArrayList<>());
@@ -216,8 +217,14 @@ public class Game {
     }
 
     public boolean checkWinner(Player player) {
-        return (player.getPoints() >= 20);
+        return (player.getPoints() >= 10);
 
+    }
+
+    private void sendToClientsMessage(String message) {
+        for (ClientHandler client : clients) {
+            client.outMessage(message);
+        }
     }
 
 
@@ -396,7 +403,6 @@ public class Game {
         }
         graph.addEdge(62, 51);
         graph.addEdge(51, 62);
-        System.out.println(graph.getAdjLists());
         return graph;
     }
 
@@ -410,7 +416,6 @@ public class Game {
 
         }
     }
-
 
     private String randomColor() {
         Random r = new Random();

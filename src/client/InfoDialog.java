@@ -28,10 +28,7 @@ public class InfoDialog {
             FXCollections.observableArrayList(
                     new Information("Z - Zbojnici", "Olupia ta o naklad, misiu musis robit od znova."),
                     new Information("RC - Rozbita cesta", "Stojis jedno kolo"),
-                    new Information("B - Bazina", "Hod kockou a o tolko sa vrat spat"),
-                    new Information("O - Ochranka", "Ochrana pred zbojnikmi."),
-                    new Information("NK - Nove koleso", "Imunita voci rozbitej ceste."),
-                    new Information("S - Sprievodca", "Imunita voci bazine.")
+                    new Information("B - Bazina", "Hod kockou a o tolko sa vrat spat")
             );
 
 

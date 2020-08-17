@@ -11,10 +11,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import server.Game;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class GameClient extends Application {
     private int akt_money = 10;
@@ -24,16 +26,21 @@ public class GameClient extends Application {
     private Color color;
     private Mapa map;
     private ArrayList<Policko> activeList = new ArrayList<>();
+    private Map<String, PlayerTemplate> mapTemplates = new HashMap<>();
     private int act_position;
     private String nick;
     private PlayerTemplate downLeftPlayer;
     private boolean isChipPressed;
     private Label message = new Label("");
+    boolean exist = false;
 
 
     private void newGameAction() {
+        if (!exist) {
         StartDialog dialog = new StartDialog(this);
         this.serverConnection = dialog.showDialog();
+        exist = true;
+    }
     }
 
     private void exitGameAction() {
@@ -47,7 +54,6 @@ public class GameClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        //TODO: rozdlit do funkcii .. createMenuBar, ...
         primaryStage.setMinWidth(1850);
         primaryStage.setMinHeight(1050);
         primaryStage.setMaxHeight(1050);
@@ -67,9 +73,10 @@ public class GameClient extends Application {
     }
 
     public void createGame(boolean isYourTurn, StartInfoPlayer myInfo, StartInfoPlayer opponentInfo) {
+
         if(isYourTurn) this.message.setText("NOW IS YOUR TURN");
         else this.message.setText("WAIT FOR TURN");
-        this.message.setFont(new Font(40));
+        this.message.setFont(new Font(30));
         this.nick = myInfo.getNick();
         this.act_position = myInfo.getActPosition();
         this.isYourTurn = isYourTurn;
@@ -79,6 +86,11 @@ public class GameClient extends Application {
 
         PlayerTemplate upLeftPlayer = new PlayerTemplate(opponentInfo, this);
         this.downLeftPlayer = new PlayerTemplate(myInfo, this);
+
+        mapTemplates.put(myInfo.getNick(), downLeftPlayer);
+        mapTemplates.put(opponentInfo.getNick(), upLeftPlayer);
+
+
         //PlayerTemplate upRightPlayer = new PlayerTemplate("Player 2", true, null, null, "bla", "bla", null);
         //PlayerTemplate downRightPlayer = new PlayerTemplate("Player 3", true, null, null, "bla", "bla", null);
 
@@ -97,10 +109,7 @@ public class GameClient extends Application {
 
     }
 
-    public void vyber_policko(String serverresponse) {
-
-        String[] serverResponseTokens = serverresponse.split(" ");
-
+    public void vyber_policko(String[] serverResponseTokens) {
         for (int i = 2; i < serverResponseTokens.length; i++) {
             for (Policko policko : map.getPolickoList()) {
                 if(policko.getID() == Integer.valueOf(serverResponseTokens[i])) {
@@ -112,15 +121,18 @@ public class GameClient extends Application {
         }
     }
 
-    public void change_position_opponent(String serverResponse) {
-        String[] serverResponseTokens = serverResponse.split(" ");
-
+    public void change_position_opponent(String[] serverResponseTokens) {
 
         //prehladnejsie
         this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[2])).setFigurku(findColor(serverResponseTokens[3]));
 
         this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[4])).deleteFigurku();
 
+        for(Policko pol : this.activeList) {
+            pol.setNormalBackround();
+            pol.setIsActive(false);
+        }
+        this.activeList.clear();
     }
 
     private Color findColor(String color) {
@@ -144,25 +156,28 @@ public class GameClient extends Application {
         return c;
     }
 
-    public void started_mission(String serverResponse) {
-        // podla nicku zavolat template
-        this.downLeftPlayer.setColorFrom();
+    public void started_mission(String[] serverResponseTokens) {
+        PlayerTemplate template = this.mapTemplates.get(serverResponseTokens[1]);
+        template.setColorFrom();
+
     }
 
 
 
-    public void new_mission(String serverResponse) {
-        String[] serverResponseTokens = serverResponse.split(" ");
+    public void new_mission(String[] serverResponseTokens) {
 
-        // tu podla nicku potom zmenis template
+        PlayerTemplate template = this.mapTemplates.get(serverResponseTokens[1]);
 
-        this.downLeftPlayer.setCastleFrom(serverResponseTokens[2]);
-        this.downLeftPlayer.setCastleTo(serverResponseTokens[3]);
-        this.downLeftPlayer.plusMoney(serverResponseTokens[4]);
-        this.downLeftPlayer.setPoints(serverResponseTokens[4]);
+        template.setCastleFrom(serverResponseTokens[2]);
+        template.setCastleTo(serverResponseTokens[3]);
+        if(this.nick.equals(serverResponseTokens[1])) {
+            template.plusMoney(serverResponseTokens[4]);
+        }
 
-        if("true".equals(serverResponseTokens[5])) this.downLeftPlayer.setColorFrom();
-        else this.downLeftPlayer.setNormalColorFrom();
+        template.setPoints(serverResponseTokens[4]);
+
+        if("true".equals(serverResponseTokens[5])) template.setColorFrom();
+        else template.setNormalColorFrom();
 
 
     }
@@ -171,6 +186,20 @@ public class GameClient extends Application {
     public void startMove(String nick) {
         this.serverConnection.sendMessage("START_MOVE " + nick);
     }
+
+
+
+    public void vstupil_na_policko_s_cipom(Policko newActPolicko, String znak) {
+        for(Policko pol : this.activeList) {
+            pol.setNormalBackround();
+            pol.setIsActive(false);
+        }
+        String message;
+        message = "ENTERED_ON_CHIP " + this.nick + " " + znak + " " + newActPolicko.getID();
+        this.serverConnection.sendMessage(message);
+    }
+
+
 
 
 
@@ -189,29 +218,71 @@ public class GameClient extends Application {
 
     }
 
-    public void end_game(String serverResponse) {
-        String[] serverResponseTokens = serverResponse.split(" ");
+    public void end_game(String[] serverResponseTokens) {
         System.out.println("Vitaz je " + serverResponseTokens[1]);
 
-        exitGameAction();
-        //alert ze je koniec hry a vyhral serverResponseTokens[1]
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("END GAME");
+            alert.setHeaderText(null);
+            alert.setContentText("Vitazom sa stava " + serverResponseTokens[1] + "! Dufame ze vas hra bavila");
+            ButtonType buttonTypeOK = new ButtonType("OK", ButtonBar.ButtonData.CANCEL_CLOSE);
+            alert.getButtonTypes().setAll(buttonTypeOK);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == buttonTypeOK) exitGameAction();
+        });
+
+        this.serverConnection.sendMessage("TERMINATE");
+
+    }
+
+
+    public void add_chip(String[] serverResponseTokens) {
+        Policko policko = this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[3]));
+        policko.setChip(findColor(serverResponseTokens[1]), serverResponseTokens[2]);
+
+    }
+
+    public void someone_entered_on_chip(String[] serverResponseTokens) {
+        boolean itIsMe = serverResponseTokens[1].equals(this.nick);
+        Policko newPolicko = this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[3]));
+
+
+        if(!serverResponseTokens[2].equals("B")) {
+            this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[3])).setFigurku(findColor(serverResponseTokens[4]));
+            this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[5])).deleteFigurku();
+            if(itIsMe) {
+                this.map.getAct_policko().deleteFigurku();
+                this.map.setAct_policko(newPolicko);
+                this.act_position = newPolicko.getID();
+            }
+        }
+
+
+        for(Policko pol : this.activeList) {
+            pol.setNormalBackround();
+            pol.setIsActive(false);
+        }
+        this.activeList.clear();
+
+
+        this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[3])).setNormalCircleColor();
+        this.map.getPolickoByID().get(Integer.valueOf(serverResponseTokens[5])).setNormalCircleColor();
+
+
+        if(serverResponseTokens[2].equals("Z")) this.mapTemplates.get(serverResponseTokens[1]).setNormalColorFrom();
     }
 
 
 
 
-
-
-    public void setNewPlayerMove(String serverResponse) {
-        //rozdelit este pred tym nez zaavolas funkciu
+    public void setNewPlayerMove(String[] serverResponseTokens) {
 
         //pomenit to tak aby si pamatal len gameclient ze ci som na tahu alebo nie
 
-
-        String[] serverResponseTokens = serverResponse.split(" ");
         if(serverResponseTokens[1].equals(this.nick)) {
             this.setIsYourTurn(true);
-            this.downLeftPlayer.setIsYourTurn(true);
+            mapTemplates.get(this.nick).setIsYourTurn(true);
             Platform.runLater(() -> {
                 this.message.setText("NOW IS YOUR TURN");
             });
@@ -285,6 +356,28 @@ public class GameClient extends Application {
 
     public void removeChip(Chip chip) {
         this.downLeftPlayer.removeNegativeChip(chip);
+    }
+
+    public void put_new_chip(Color color, String znak, int id) {
+        String stringColor = "";
+
+
+        // TODO opravit jednoduchsie
+        if(color == Color.BLUE) {
+            stringColor = "BLUE";
+        }
+        if(color == Color.YELLOW) {
+            stringColor = "YELLOW";
+        }
+        if(color == Color.RED) {
+            stringColor = "RED";
+        }
+        if(color == Color.GREEN) {
+            stringColor = "GREEN";
+        }
+
+        String string = "PUT_NEW_CHIP " + stringColor + " " + znak + " " + id;
+        this.serverConnection.sendMessage(string);
     }
 
 

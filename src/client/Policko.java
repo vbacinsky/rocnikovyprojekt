@@ -17,4 +17,8 @@ public interface Policko {
 
    public void setNormalBackround();
 
+   public void setChip(Color color, String znak);
+
+   public void setNormalCircleColor();
+
 }

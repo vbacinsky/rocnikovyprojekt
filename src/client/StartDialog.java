@@ -11,9 +11,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import server.Server;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class StartDialog {
@@ -28,6 +28,8 @@ public class StartDialog {
         border.setStyle("-fx-background-color: #e184e6;");
         Scene scene = new Scene(border);
         dialogStage.setScene(scene);
+        dialogStage.setHeight(300);
+        dialogStage.setWidth(1000);
         VBox central = new VBox();
         central.setPadding(new Insets(20, 20, 20, 20));
         central.setSpacing(30);
@@ -44,14 +46,19 @@ public class StartDialog {
         Button btnOk = new Button("pripoj");
         central.getChildren().add(btnOk);
         central.setAlignment(Pos.CENTER);
-
+        AtomicBoolean can = new AtomicBoolean(false);
         btnOk.setOnAction((ActionEvent event) -> {
             try {
-                this.serverConnection = new ServerConnection("localhost",22222, game, nick.getText());
+
+                lblnick.setText("CAKAJ NA DALSICH HRACOV. AK SA HRACI \nPRIPOJA, HRA SA AUTOMATICKY SPUSTI!");
+                btnOk.setText("OK");
+                central.getChildren().remove(nick);
+                if(!can.get()) this.serverConnection = new ServerConnection("localhost",22222, game, nick.getText());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            dialogStage.close();
+            if(can.get()) dialogStage.close();
+            can.set(true);
         });
 
     }

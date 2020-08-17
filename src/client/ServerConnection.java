@@ -30,28 +30,56 @@ public class  ServerConnection implements Runnable {
     }
 
 
+    private void handleServerResponse(String serverResponse) {
+        String[] serverResponseTokens = serverResponse.split(" ");
+
+        if (serverResponseTokens.length == 0) {
+            return;
+        }
+
+        switch (serverResponseTokens[0]) {
+            case "start":
+                createGame(serverResponseTokens);
+                break;
+            case "VYBER_POLICKO":
+                gameClient.vyber_policko(serverResponseTokens);
+                break;
+            case "NEW_MISSION":
+                gameClient.new_mission(serverResponseTokens);
+                break;
+            case "STARTED_MISSION":
+                gameClient.started_mission(serverResponseTokens);
+                break;
+            case "CHANGE_POSITION_OPPONENT":
+                gameClient.change_position_opponent(serverResponseTokens);
+                break;
+            case "NEW_PLAYER_MOVE":
+                gameClient.setNewPlayerMove(serverResponseTokens);
+                break;
+            case "END_GAME":
+                gameClient.end_game(serverResponseTokens);
+                break;
+            case "PUT_NEW_CHIP" :
+                gameClient.add_chip(serverResponseTokens);
+                break;
+            case "SOMEONE_ENTERED_ON_CHIP" :
+                gameClient.someone_entered_on_chip(serverResponseTokens);
+
+            default: break;
+        }
+    }
+
 
     @Override
     public void run() {
         try {
             while (true) {
-
-                //zmenit ako server
                 String serverResponse = in.readLine();
                 if(serverResponse == null) break;
-                if(serverResponse.contains("start")) {
-                    System.out.println(serverResponse);
-                    createGame(serverResponse);
-                }
+                System.out.println(serverResponse);
+                handleServerResponse(serverResponse);
+                if(serverResponse.contains("SERVER_END")) break;
 
-                if(serverResponse.contains("VYBER_POLICKO " + nick)) gameClient.vyber_policko(serverResponse);
-                System.out.println("Server says: " + serverResponse);
-
-                if(serverResponse.contains("NEW_MISSION")) gameClient.new_mission(serverResponse);
-                if(serverResponse.contains("STARTED_MISSION")) gameClient.started_mission(serverResponse);
-                if(serverResponse.contains("CHANGE_POSITION_OPPONENT")) gameClient.change_position_opponent(serverResponse);
-                if(serverResponse.contains("NEW_PLAYER_MOVE")) gameClient.setNewPlayerMove(serverResponse);
-                if(serverResponse.contains("END_GAME")) gameClient.end_game(serverResponse);
             }
         } catch (IOException e) {
                 e.printStackTrace();
@@ -65,16 +93,13 @@ public class  ServerConnection implements Runnable {
 
     }
 
-    private void createGame(String serverResponse) {
+    private void createGame(String[] serverResponseTokens) {
         boolean isYourTurn;
-        String[] serverResponseTokens = serverResponse.split(" ");
         int count = 2;
 
         StartInfoPlayer myInfo = null;
         StartInfoPlayer opponentInfo = null;
 
-
-        //nejak rozumnejsie potom :D
         for (int i = 0; i < 2; i++) {
             if (serverResponseTokens[count].equals(nick)) {
                myInfo = new StartInfoPlayer(serverResponseTokens[count], serverResponseTokens[count+1],
@@ -87,8 +112,6 @@ public class  ServerConnection implements Runnable {
         }
 
         isYourTurn = serverResponseTokens[1].equals("." + nick);
-        System.out.println(isYourTurn);
-
         gameClient.createGame(isYourTurn, myInfo, opponentInfo);
     }
 }

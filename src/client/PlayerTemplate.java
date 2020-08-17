@@ -22,11 +22,9 @@ public class PlayerTemplate extends VBox {
 
 
     private boolean isSomePressed = false;
-    private ArrayList<Chip> positiveChips = new ArrayList<>();
     private ArrayList<Chip> negativeChips = new ArrayList<>();
     private Text money;
     private Color color;
-    private GridPane gridPaneP = new GridPane();
     private GridPane gridPaneN = new GridPane();
     private GameClient gameClient;
     private Text castleFrom;
@@ -34,37 +32,28 @@ public class PlayerTemplate extends VBox {
     private Text points;
     private Chip pressedChip;
     private boolean isYourTurn;
+    private boolean isStarted = false;
 
     public PlayerTemplate(StartInfoPlayer info, GameClient gameClient) {
-
         this.isYourTurn = gameClient.getIsYourTurn();
-
         this.color = info.getColor();
         this.gameClient = gameClient;
-
         this.setSpacing(10);
-
-        HBox image_nick = new HBox(40);
-
-        VBox nick_money = new VBox(20);
-        nick_money.setPadding(new Insets(0, 10, 10, 10));
-
-        nick_money.setAlignment(Pos.CENTER);
         this.points = new Text("0 POINTS");
         points.setFont(new Font(20));
+
+        HBox image_nick = new HBox(40);
+        VBox nick_money = new VBox(20);
+        nick_money.setPadding(new Insets(0, 10, 10, 10));
+        nick_money.setAlignment(Pos.CENTER);
         Text nick = new Text(info.getNick());
         nick.setFont(new Font(20));
-
-
         nick_money.getChildren().addAll(nick, points);
         if(!info.getIsOpponent()) {
             this.money = new Text("10 F");
             money.setFont(new Font(30));
             nick_money.getChildren().add(money);
         }
-
-
-
 
         Circle circle = new Circle();
         circle.setRadius(10);
@@ -82,15 +71,9 @@ public class PlayerTemplate extends VBox {
             image_nick.getChildren().addAll(selectedImage, nick_money, circle);
         }
 
-        HBox positiveChips = new HBox(5);
-        //tu sa potom bude ukladat postupne kazdy jeden chip
-
-        positiveChips.getChildren().addAll(new Text("positive chips: "), this.gridPaneP);
 
         HBox negativeChips = new HBox(5);
-        //tu sa potom bude ukladat postupne kazdy jeden chip
         negativeChips.getChildren().addAll(new Text("negative chips: "), this.gridPaneN);
-
 
         HBox fromBox = new HBox(10);
         this.castleFrom = new Text(info.getFrom());
@@ -99,29 +82,26 @@ public class PlayerTemplate extends VBox {
         fromText.setFill(Color.WHITE);
         fromBox.getChildren().addAll(fromText, castleFrom);
 
-
         HBox toBox = new HBox(10);
         this.castleTo = new Text(info.getTo());
         Text toText = new Text("TO: ");
         toText.setFill(Color.WHITE);
         toBox.getChildren().addAll(toText, castleTo);
 
-        this.getChildren().addAll(image_nick, positiveChips, negativeChips, fromBox, toBox);
-
+        this.getChildren().addAll(image_nick, negativeChips, fromBox, toBox);
 
         if(!info.getIsOpponent()) {
             HBox buttonBox = new HBox(10);
             Button end = new Button("END");
             Button buy = new Button("BUY");
-            Button showRules = new Button("RUL");
-            Button showMission = new Button("M");
+            Button showInfo = new Button("INFO");
             Button hod_kockou = new Button("START");
-
 
             end.setOnAction((
                     ActionEvent) -> {
                 try {
-                    if(isYourTurn) {
+                    if(isYourTurn && isStarted) {
+                        this.isStarted = false;
                         this.isSomePressed = false;
                         this.isYourTurn = false;
                         this.gameClient.setIsYourTurn(false);
@@ -136,7 +116,10 @@ public class PlayerTemplate extends VBox {
             hod_kockou.setOnAction((
                     ActionEvent) -> {
                 try {
-                    if(isYourTurn) this.gameClient.startMove(info.getNick());
+                    if(isYourTurn && !isStarted) {
+                        isStarted = true;
+                        this.gameClient.startMove(info.getNick());
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("chyba");
                 }
@@ -145,7 +128,7 @@ public class PlayerTemplate extends VBox {
             buy.setOnAction((
                     ActionEvent) -> {
                 try {
-                    if(isYourTurn) {
+                    if(isYourTurn && isStarted ) {
                         BuyDialog buyDialog = new BuyDialog(this);
                         buyDialog.showDialog();
                     }
@@ -155,8 +138,7 @@ public class PlayerTemplate extends VBox {
             });
 
 
-
-            showRules.setOnAction((
+            showInfo.setOnAction((
                     ActionEvent event) -> {
                 try {
                     InfoDialog dialog = new InfoDialog();
@@ -165,7 +147,7 @@ public class PlayerTemplate extends VBox {
                     System.out.println("chyba");
                 }
             });
-            buttonBox.getChildren().addAll(end, buy, showMission, showRules, hod_kockou);
+            buttonBox.getChildren().addAll(end, buy, showInfo, hod_kockou);
             buttonBox.setAlignment(Pos.BOTTOM_CENTER);
             this.getChildren().add(buttonBox);
         }
@@ -187,14 +169,10 @@ public class PlayerTemplate extends VBox {
 
     public void setPoints(String plusPoints){
         String[] x = this.points.getText().split(" ");
-        int result = Integer.valueOf(x[0] + Integer.valueOf(plusPoints));
+        int result = Integer.valueOf(x[0]) + Integer.valueOf(plusPoints);
         this.points.setText("" + result + " POINTS");
     }
 
-    public void addPositiveChips(Chip positiveChip) {
-        this.positiveChips.add(positiveChip);
-        gridPaneP.addRow(0, positiveChip);
-    }
 
     public void addNegativeChips (Chip negativeChip) {
         this.negativeChips.add(negativeChip);

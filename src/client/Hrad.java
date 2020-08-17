@@ -23,7 +23,7 @@ public class Hrad extends StackPane implements Policko {
         this.gameClient = gameClient;
         this.isActive = false;
         this.id = id;
-        Label label = new Label("" + id);
+        Label label = new Label("");
         rectangle = new Rectangle(43, 43, this.colorBackround);
         this.getChildren().addAll(rectangle, new Circle(20, color), label, figurka);
         this.setAlignment(Pos.CENTER);
@@ -59,6 +59,11 @@ public class Hrad extends StackPane implements Policko {
     }
 
     @Override
+    public void setChip(Color color, String znak) {
+
+    }
+
+    @Override
     public void setIsActive(boolean bool) {
         this.isActive = bool;
     }
@@ -73,5 +78,9 @@ public class Hrad extends StackPane implements Policko {
     @Override
     public void deleteFigurku() {
         this.figurka.setFill(null);
+    }
+
+    public void setNormalCircleColor() {
+
     }
 }

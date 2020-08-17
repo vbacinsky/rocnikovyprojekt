@@ -1,7 +1,5 @@
 package server;
 
-import client.GameClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,35 +8,22 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
-    final static String unknownRequestMsg = "Client sent unknown request.";
     private Server server;
-    private Socket client;
-    private int id;
     private BufferedReader in;
     private PrintWriter out;
     private ArrayList<ClientHandler> clients;
 
-    public ClientHandler(Socket clientSocket, int id, ArrayList<ClientHandler> clients, Server server) throws IOException {
+    public ClientHandler(Socket clientSocket, Server server) throws IOException {
         this.server = server;
-        this.clients = clients;
-        this.id = id;
-        this.client = clientSocket;
-        in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        out = new PrintWriter(client.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
     }
-
-
-    public void ready() {
-        out.println("We are ready to play");
-    }
-
 
     public void outMessage(String message) {
         out.println(message);
     }
 
-
-    private void handleClientsRequestAndRespond(String clientsRequest) {
+    private void handleClientsRequest(String clientsRequest) {
         String[] clientRequestTokens = clientsRequest.split(" ");
 
         if(clientRequestTokens.length == 0)
@@ -60,13 +45,18 @@ public class ClientHandler implements Runnable {
             case "END_MOVE" :
                 server.handleEndMove();
                 break;
-
+            case "TERMINATE" :
+                server.handleTerminate();
+                break;
+            case "PUT_NEW_CHIP" :
+                server.handlePutNewChip(clientsRequest);
+                break;
+            case "ENTERED_ON_CHIP" :
+                server.handleSomeoneEnteredOnCip(clientRequestTokens);
+                break;
+            default: break;
         }
-
-        return;
     }
-
-
 
 
     @Override
@@ -76,8 +66,8 @@ public class ClientHandler implements Runnable {
                 String clientRequest = in.readLine();
                 if (clientRequest == null) break;
                 System.out.println(clientRequest);
-                handleClientsRequestAndRespond(clientRequest);
-
+                handleClientsRequest(clientRequest);
+                if(clientRequest.equals("TERMINATE")) break;
             }
         } catch (IOException e) {
                 e.printStackTrace();

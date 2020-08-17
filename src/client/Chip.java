@@ -8,42 +8,34 @@ import javafx.scene.shape.Circle;
 
 public class Chip extends StackPane {
     private Label label = new Label();
-    private boolean isPositive;
     private boolean isPressed = false;
     private Circle circle;
     private Color color;
     private String znak;
 
-    public Chip(boolean isPositive, Color color, String znak, PlayerTemplate playerTemplate) {
+    public Chip(Color color, String znak, PlayerTemplate playerTemplate) {
         this.color = color;
         this.znak = znak;
-        this.isPositive = isPositive;
         this.circle = new Circle(15);
         circle.setFill(color);
         this.label.setText(this.znak);
         this.getChildren().addAll(this.circle, label);
         this.setOnMouseClicked((MouseEvent e) -> {
             if(playerTemplate.getIsYourTurn()) {
-                if (!isPositive) {
-                    if (isPressed) {
-                        label.setTextFill(Color.BLACK);
-                        this.circle.setFill(this.color);
-                        playerTemplate.setisSomePressed(false);
-                        isPressed = false;
-                    } else if (!playerTemplate.getisSomePressed()) {
-                        this.circle.setFill(Color.BLACK);
-                        this.label.setTextFill(Color.WHITE);
-                        playerTemplate.setisSomePressed(true);
-                        this.isPressed = true;
-                        playerTemplate.setPressedChip(this);
-                    }
+                if (isPressed) {
+                    label.setTextFill(Color.BLACK);
+                    this.circle.setFill(this.color);
+                    playerTemplate.setisSomePressed(false);
+                    isPressed = false;
+                } else if (!playerTemplate.getisSomePressed()) {
+                    this.circle.setFill(Color.BLACK);
+                    this.label.setTextFill(Color.WHITE);
+                    playerTemplate.setisSomePressed(true);
+                    this.isPressed = true;
+                    playerTemplate.setPressedChip(this);
                 }
             }
         });
-    }
-
-    public boolean getIsPositive() {
-        return this.isPositive;
     }
 
     public String getZnak() {
